@@ -8,26 +8,47 @@ categories:
   - hyperspectral
 ---
 
-## The question
+For a single core box (SWIR data, for this example, as that is what I mostly work with):
+- Raw dataset: ~ 400Mb 
+- Cropped reflectance: ~170Mb
+- Derived data:
+ - Smoothed: ~170Mb
+ - Normalised: 300Mb
+ - Mask, bands, metadata, Interpretation images: ~10Mb 
+For a typical project (10-12 holes, ~80 boxes each), that's ~600 GB total. Should I really store all of that?
 
-What made me look at this?
+There are three resources available to a system working with hyperspectral data:
+- Disk storage
+- Time
+- RAM
 
-## What I did
+Time
 
-Enough information to understand or reproduce the test. This does not need to become a journal-style Methods section.
+If I only store cropped reflectance and compute derivatives on-demand, that solves the storage problem, but I pay in time.
+To recalculate the smoothing on demand is ~1-2 seconds, to recalculate the continuum removal is ~ 10-30 seconds. 
+Lets say we want to try a processing technique on each box in a 200m hole (45 boxes), that is about 25 minutes just in re-deriving the products needed, with whatever time penalty your feature extraction or correlation has added on top.
+That is some frustrating processing, difficult to iterate.
 
-## What happened
+RAM
 
-Put the important figure, table or result here.
+Okay, so for interactive processing, caching would definitely be an advantage. Do I really need it all on disk?
 
-## What I think it means
+Many of the processes I run require both the smoothed data and the normalised, but lets say our processes just require the normalised. So, lets cache that in RAM at startup, a one-time slowdown, but fast iterative processing experience with no wasted disk space. 
 
-Interpret the result. Separate observation from interpretation where that distinction matters.
+For our 45 box hole, approximately ~300Mb per normalised dataset, that is 13.5Gb of RAM required. At startup. Lets hope our algorithm doesn’t produce any intermediate arrays of any size and that we never work with a hole longer than 200m.
 
-## Caveats
+Disk
 
-What should a reader *not* conclude from this?
+So, I am back to aggressively caching to disk. It looked wasteful when I started, nearly doubling the size of the data storage just on intermediate products. However, compared to time and RAM, it is by far the most abundant resource.
 
-## Code / data / references
+My strategy of caching everything to disk gives me access to memmaping, which means I can have a 1km hole “open”, over 150Gb of data. By carefully managing dropping a fully read array back to a memmap I can work on a full hole using an 8Gb RAM machine.
 
-Links or citations if useful. Omit this section when it adds nothing.
+What looked extremely wasteful when I started is actually just maximising the most scarce resources.
+
+I am adding architecture for an archive file for long term storage. This will be the minimum dataset to deterministically reproduce the full analysed box.
+
+Other strategies:
+- Eliminate the time penalties with more efficient computing?
+ - Maybe this has been solved in the commercial software world, but Python gives too much for me to move away from it (NumPy, SciPy, Hylite).
+- Solve RAM with very high-end workstations?
+ -I do not see a >64Gb RAM machine in my professional near-future, and certainly not a >128Gb. 
