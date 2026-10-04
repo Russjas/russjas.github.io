@@ -10,7 +10,242 @@
 <atom:link href="https://russjas.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>Geoscience and hyperspectral imaging</description>
 <generator>quarto-1.10.18</generator>
-<lastBuildDate>Sun, 04 Oct 2026 11:05:59 GMT</lastBuildDate>
+<lastBuildDate>Sat, 03 Oct 2026 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Hyperspectral data is big!</title>
+  <dc:creator>Russell Rogers</dc:creator>
+  <link>https://russjas.github.io/notes/hyperspectra-data-big.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<p>Compared to remote sensing, hyperspectral core scanning produces fairly manageable file sizes.</p>
+<p>For a single core box (SWIR data in this example, as that is what I mostly work with):</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Size</th>
+<th>Data type</th>
+<th>Format</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Raw data</td>
+<td>~400 MB</td>
+<td>float32</td>
+<td>ENVI</td>
+</tr>
+<tr class="even">
+<td>Cropped reflectance</td>
+<td>~170 MB</td>
+<td>float32</td>
+<td>npy/ENVI</td>
+</tr>
+<tr class="odd">
+<td><em>Derived data</em></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Smoothed</td>
+<td>~170 MB</td>
+<td>float32</td>
+<td>npy/ENVI</td>
+</tr>
+<tr class="odd">
+<td>Normalised (continuum removed)</td>
+<td>~300 MB</td>
+<td>float64</td>
+<td>npy/ENVI</td>
+</tr>
+<tr class="even">
+<td>Mask, bands, metadata, interpretation images</td>
+<td>~10 MB</td>
+<td>various</td>
+<td>npy, ENVI, jpg, json, xml</td>
+</tr>
+</tbody>
+</table>
+<p>But there are a lot of them!</p>
+<p>A typical project is 10–12 holes of ~80 boxes each, so call it 1000 boxes for a small to medium project. At ~1 GB per box, that is <strong>~1 TB</strong>, and the derived data accounts for almost half of it.</p>
+<p>But it is <em>derived</em> data. Why not just derive it when you need it?</p>
+<p>If you have used CoreSpecViewer, you know that I do store it. All of it, for every box. Here is why.</p>
+<section id="three-strategies" class="level2">
+<h2 class="anchored" data-anchor-id="three-strategies">Three strategies</h2>
+<p>A system working with hyperspectral data has three resources to spend:</p>
+<ul>
+<li><strong>Disk</strong></li>
+<li><strong>Time</strong></li>
+<li><strong>RAM</strong></li>
+</ul>
+<p>And there are three ways to handle derived products:</p>
+<ol type="1">
+<li><strong>Derive on demand.</strong> Compute it when needed, use it, throw it away. Costs time.</li>
+<li><strong>Cache in RAM.</strong> Compute everything once at startup and hold it. Costs RAM.</li>
+<li><strong>Cache to disk.</strong> Compute once, store it, read it back. Costs disk.</li>
+</ol>
+<p>Let’s go through them, worst first.</p>
+</section>
+<section id="cache-in-ram" class="level2">
+<h2 class="anchored" data-anchor-id="cache-in-ram">Cache in RAM</h2>
+<p>Many of my processes need both the smoothed and the normalised data. We could compute it for a whole hole at startup: a one-time slowdown, then fast iterative work and no wasted disk.</p>
+<p>For an 80-box hole at ~300 MB per normalised dataset, that is <strong>24 GB of RAM</strong>, before any algorithm allocates a single intermediate array, and before you meet a hole longer than average.</p>
+<p>I do not see a &gt;64 GB machine in my professional near future, never mind &gt;128 GB. An 8 GB laptop is probably standard for the average geo-about-town. So this one is out.</p>
+</section>
+<section id="derive-on-demand" class="level2">
+<h2 class="anchored" data-anchor-id="derive-on-demand">Derive on demand</h2>
+<p>This is the option that deserves a proper look. It costs no disk, and its RAM footprint is small, because you only hold one box at a time:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Dataset</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Cropped reflectance</td>
+<td>~170 MB</td>
+</tr>
+<tr class="even">
+<td>Smoothed</td>
+<td>~170 MB</td>
+</tr>
+<tr class="odd">
+<td>Normalised</td>
+<td>~300 MB</td>
+</tr>
+<tr class="even">
+<td><strong>Inputs held in RAM</strong></td>
+<td><strong>~640 MB</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Add the intermediates of a feature extraction and you are still under 1 GB. That is nothing, so RAM is not the problem here. Time is.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Derived product</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Smoothing</td>
+<td>~1–2 s</td>
+</tr>
+<tr class="even">
+<td>Continuum removal</td>
+<td>~10–30 s</td>
+</tr>
+</tbody>
+</table>
+<p>Here is the call signature for feature extraction in CoreSpecViewer:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> Combined_MWL(savgol, savgol_cr, mask, bands, feature, technique<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'QUAD'</span>,</span>
+<span id="cb1-2">                 use_width<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">False</span>, cached_arrays<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>):</span></code></pre></div></div>
+<p>It takes <code>savgol</code> (the smoothed reflectance) and <code>savgol_cr</code> (the normalised reflectance). Mask and bands have to be stored regardless. So, starting from cropped reflectance:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Derive on demand</th>
+<th>Cached to disk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Smoothing</td>
+<td>~1 s</td>
+<td>–</td>
+</tr>
+<tr class="even">
+<td>Continuum removal</td>
+<td>~10 s</td>
+<td>–</td>
+</tr>
+<tr class="odd">
+<td>Read from disk</td>
+<td>–</td>
+<td>~1 s</td>
+</tr>
+<tr class="even">
+<td>Feature extraction</td>
+<td>~15 s</td>
+<td>~15 s</td>
+</tr>
+<tr class="odd">
+<td><strong>Per box</strong></td>
+<td><strong>~26 s</strong></td>
+<td><strong>~16 s</strong></td>
+</tr>
+<tr class="even">
+<td><strong>Per 80-box hole</strong></td>
+<td><strong>~35 min</strong></td>
+<td><strong>~21 min</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>Per 10-hole project</strong></td>
+<td><strong>~5.8 h</strong></td>
+<td><strong>~3.5 h</strong></td>
+</tr>
+</tbody>
+</table>
+<p>In this straightforward path, caching saves about 40%, which is real, but a slow feature extraction is still slow.</p>
+<p>You will never run a feature extraction <em>once</em>. You pick parameters, look at the result, change a threshold, try a different fitting method, look again. You flick between boxes in the viewer, and you build downhole plots. Every one of those is an access.</p>
+<p>Derive on demand pays the derivation cost on <strong>every access</strong>. Caching pays it <strong>once</strong>, and every access after that costs a disk read.</p>
+<p>Ten iterations of tuning across one hole means 800 box accesses. At ~11 s of re-derivation each, that is <strong>nearly 2.5 hours spent recomputing data that has not changed</strong>. The cached version spends about 13 minutes reading it back. In exploratory, iterative work, the work this software exists for, the number of accesses explodes and the gap explodes with it.</p>
+</section>
+<section id="so-disk" class="level2">
+<h2 class="anchored" data-anchor-id="so-disk">So, disk</h2>
+<p>Disk caching vastly increases the access speed for derived data, but what pushes it over the edge into the absolute preferred option?<br>
+Memmapping.</p>
+<p>Because everything lives on disk as arrays, CoreSpecViewer can memory-map it. That lets me have a 1 km hole “open” (over 150 GB of data) on an 8 GB RAM machine. Arrays are paged in as they are read and dropped back to the memmap when I am done with them.</p>
+<p>You cannot memmap an array that does not exist yet. A whole-hole view built on derive-on-demand would mean deriving the whole hole, which drops us straight back into the RAM problem.</p>
+<p>Caching everything looked wasteful when I started, since it nearly doubles the storage. But of the three resources, disk is by far the most abundant and the cheapest. A terabyte costs less than an afternoon of a geologist’s time.</p>
+<p>What looked extremely wasteful is actually spending the abundant resource to protect the scarce ones.</p>
+</section>
+<section id="conclusions" class="level2">
+<h2 class="anchored" data-anchor-id="conclusions">“Conclusions”…</h2>
+<p><strong>This conclusion depends on my stack.</strong></p>
+<p>“You fool!”, I hear you cry, “you wrote it in Python! Of course it is slow!”</p>
+<p>You would not be wrong. Derivation could be pushed into compiled kernels, rewritten in another language, made blazingly fast. If continuum removal took one second instead of ten, the access-count argument would shrink a lot and I would revisit this. Maybe the commercial software world has already solved it. But Python gives me too much (NumPy, SciPy, hylite) for me to move away from it, and with this stack, disk wins.</p>
+<p>In a nod to the fact disk caching doubles the storage CoreSpecViewer has an archive file type for long-term storage. This is the minimum dataset needed to deterministically reproduce a fully analysed box. Cache everything while you are working, and archive the minimum when you are done. The rehydrate process is the time penalty up-front when you open an archive, then you are back to working iteratively on memmaps.</p>
+<p>The <a href="https://www.linkedin.com/posts/russell-j-rogers_hyperspectral-activity-7428891479508451328-QGRn?utm_source=share&amp;utm_medium=member_desktop&amp;rcm=ACoAAAklDkwBrjSwAs3hDy047UEHocsJbEKoxY0">Original Linkedin post</a> had some good points made by commenters that are worth reading, especially if you made it all the way through this!</p>
+
+
+</section>
+
+ ]]></description>
+  <category>hyperspectral</category>
+  <category>CoreSpecViewer</category>
+  <guid>https://russjas.github.io/notes/hyperspectra-data-big.html</guid>
+  <pubDate>Sat, 03 Oct 2026 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Notes</title>
   <link>https://russjas.github.io/notes/</link>
@@ -27,12 +262,43 @@
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
+<div class="quarto-post image-right" data-index="0" data-categories="aHlwZXJzcGVjdHJhbCUyQ0NvcmVTcGVjVmlld2Vy" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1791120832710" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1056">
+<div class="thumbnail"><a href="../notes/hyperspectra-data-big.html" class="no-external">
 
+<!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/hyperspectra-data-big.html -->
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../notes/hyperspectra-data-big.html" class="no-external">Hyperspectral data is big!</a>
+</h3>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('aHlwZXJzcGVjdHJhbA=='); return false;">hyperspectral</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('Q29yZVNwZWNWaWV3ZXI='); return false;">CoreSpecViewer</div>
+
+</div>
+<div class="delink listing-description"><a href="../notes/hyperspectra-data-big.html" class="no-external">
+<p>Development trade-offs in hyperspectral software</p>
+</a></div>
+</div>
+<div class="metadata">
+<a href="../notes/hyperspectra-data-big.html" class="no-external">
+<div class="listing-date">
+Oct 3, 2026
+</div>
+<div class="listing-author">
+Russell Rogers
+</div>
+</a>
+</div>
+</div>
 </div>
 <div class="listing-no-matching d-none">No matching items</div>
 </div> ]]></description>
   <guid>https://russjas.github.io/notes/</guid>
-  <pubDate>Sun, 04 Oct 2026 11:05:59 GMT</pubDate>
+  <pubDate>Sun, 04 Oct 2026 13:34:07 GMT</pubDate>
 </item>
 </channel>
 </rss>

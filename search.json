@@ -4,7 +4,7 @@
     "href": "notes/index.html",
     "title": "Notes",
     "section": "",
-    "text": "These are deliberately not papers. They are a public notebook: small pieces of work that seem worth making findable and permanent.\nSome are analyses. Some are explanations. Some are records of an unexpected result. The level of polish varies with the problem.\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "These are deliberately not papers. They are a public notebook: small pieces of work that seem worth making findable and permanent.\nSome are analyses. Some are explanations. Some are records of an unexpected result. The level of polish varies with the problem.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHyperspectral data is big!\n\n\n\nhyperspectral\n\nCoreSpecViewer\n\n\n\nDevelopment trade-offs in hyperspectral software\n\n\n\n\n\nOct 3, 2026\n\n\nRussell Rogers\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "training/index.html",
@@ -33,5 +33,47 @@
     "title": "Russell Rogers: Things not worth a paper",
     "section": "Recent notes",
     "text": "Recent notes"
+  },
+  {
+    "objectID": "notes/hyperspectra-data-big.html",
+    "href": "notes/hyperspectra-data-big.html",
+    "title": "Hyperspectral data is big!",
+    "section": "",
+    "text": "Compared to remote sensing, hyperspectral core scanning produces fairly manageable file sizes.\nFor a single core box (SWIR data in this example, as that is what I mostly work with):\nBut there are a lot of them!\nA typical project is 10–12 holes of ~80 boxes each, so call it 1000 boxes for a small to medium project. At ~1 GB per box, that is ~1 TB, and the derived data accounts for almost half of it.\nBut it is derived data. Why not just derive it when you need it?\nIf you have used CoreSpecViewer, you know that I do store it. All of it, for every box. Here is why."
+  },
+  {
+    "objectID": "notes/hyperspectra-data-big.html#three-strategies",
+    "href": "notes/hyperspectra-data-big.html#three-strategies",
+    "title": "Hyperspectral data is big!",
+    "section": "Three strategies",
+    "text": "Three strategies\nA system working with hyperspectral data has three resources to spend:\n\nDisk\nTime\nRAM\n\nAnd there are three ways to handle derived products:\n\nDerive on demand. Compute it when needed, use it, throw it away. Costs time.\nCache in RAM. Compute everything once at startup and hold it. Costs RAM.\nCache to disk. Compute once, store it, read it back. Costs disk.\n\nLet’s go through them, worst first."
+  },
+  {
+    "objectID": "notes/hyperspectra-data-big.html#cache-in-ram",
+    "href": "notes/hyperspectra-data-big.html#cache-in-ram",
+    "title": "Hyperspectral data is big!",
+    "section": "Cache in RAM",
+    "text": "Cache in RAM\nMany of my processes need both the smoothed and the normalised data. We could compute it for a whole hole at startup: a one-time slowdown, then fast iterative work and no wasted disk.\nFor an 80-box hole at ~300 MB per normalised dataset, that is 24 GB of RAM, before any algorithm allocates a single intermediate array, and before you meet a hole longer than average.\nI do not see a &gt;64 GB machine in my professional near future, never mind &gt;128 GB. An 8 GB laptop is probably standard for the average geo-about-town. So this one is out."
+  },
+  {
+    "objectID": "notes/hyperspectra-data-big.html#derive-on-demand",
+    "href": "notes/hyperspectra-data-big.html#derive-on-demand",
+    "title": "Hyperspectral data is big!",
+    "section": "Derive on demand",
+    "text": "Derive on demand\nThis is the option that deserves a proper look. It costs no disk, and its RAM footprint is small, because you only hold one box at a time:\n\n\n\nDataset\nSize\n\n\n\n\nCropped reflectance\n~170 MB\n\n\nSmoothed\n~170 MB\n\n\nNormalised\n~300 MB\n\n\nInputs held in RAM\n~640 MB\n\n\n\nAdd the intermediates of a feature extraction and you are still under 1 GB. That is nothing, so RAM is not the problem here. Time is.\n\n\n\nDerived product\nTime\n\n\n\n\nSmoothing\n~1–2 s\n\n\nContinuum removal\n~10–30 s\n\n\n\nHere is the call signature for feature extraction in CoreSpecViewer:\ndef Combined_MWL(savgol, savgol_cr, mask, bands, feature, technique='QUAD',\n                 use_width=False, cached_arrays=None):\nIt takes savgol (the smoothed reflectance) and savgol_cr (the normalised reflectance). Mask and bands have to be stored regardless. So, starting from cropped reflectance:\n\n\n\nStep\nDerive on demand\nCached to disk\n\n\n\n\nSmoothing\n~1 s\n–\n\n\nContinuum removal\n~10 s\n–\n\n\nRead from disk\n–\n~1 s\n\n\nFeature extraction\n~15 s\n~15 s\n\n\nPer box\n~26 s\n~16 s\n\n\nPer 80-box hole\n~35 min\n~21 min\n\n\nPer 10-hole project\n~5.8 h\n~3.5 h\n\n\n\nIn this straightforward path, caching saves about 40%, which is real, but a slow feature extraction is still slow.\nYou will never run a feature extraction once. You pick parameters, look at the result, change a threshold, try a different fitting method, look again. You flick between boxes in the viewer, and you build downhole plots. Every one of those is an access.\nDerive on demand pays the derivation cost on every access. Caching pays it once, and every access after that costs a disk read.\nTen iterations of tuning across one hole means 800 box accesses. At ~11 s of re-derivation each, that is nearly 2.5 hours spent recomputing data that has not changed. The cached version spends about 13 minutes reading it back. In exploratory, iterative work, the work this software exists for, the number of accesses explodes and the gap explodes with it."
+  },
+  {
+    "objectID": "notes/hyperspectra-data-big.html#so-disk",
+    "href": "notes/hyperspectra-data-big.html#so-disk",
+    "title": "Hyperspectral data is big!",
+    "section": "So, disk",
+    "text": "So, disk\nDisk caching vastly increases the access speed for derived data, but what pushes it over the edge into the absolute preferred option?\nMemmapping.\nBecause everything lives on disk as arrays, CoreSpecViewer can memory-map it. That lets me have a 1 km hole “open” (over 150 GB of data) on an 8 GB RAM machine. Arrays are paged in as they are read and dropped back to the memmap when I am done with them.\nYou cannot memmap an array that does not exist yet. A whole-hole view built on derive-on-demand would mean deriving the whole hole, which drops us straight back into the RAM problem.\nCaching everything looked wasteful when I started, since it nearly doubles the storage. But of the three resources, disk is by far the most abundant and the cheapest. A terabyte costs less than an afternoon of a geologist’s time.\nWhat looked extremely wasteful is actually spending the abundant resource to protect the scarce ones."
+  },
+  {
+    "objectID": "notes/hyperspectra-data-big.html#conclusions",
+    "href": "notes/hyperspectra-data-big.html#conclusions",
+    "title": "Hyperspectral data is big!",
+    "section": "“Conclusions”…",
+    "text": "“Conclusions”…\nThis conclusion depends on my stack.\n“You fool!”, I hear you cry, “you wrote it in Python! Of course it is slow!”\nYou would not be wrong. Derivation could be pushed into compiled kernels, rewritten in another language, made blazingly fast. If continuum removal took one second instead of ten, the access-count argument would shrink a lot and I would revisit this. Maybe the commercial software world has already solved it. But Python gives me too much (NumPy, SciPy, hylite) for me to move away from it, and with this stack, disk wins.\nIn a nod to the fact disk caching doubles the storage CoreSpecViewer has an archive file type for long-term storage. This is the minimum dataset needed to deterministically reproduce a fully analysed box. Cache everything while you are working, and archive the minimum when you are done. The rehydrate process is the time penalty up-front when you open an archive, then you are back to working iteratively on memmaps.\nThe Original Linkedin post had some good points made by commenters that are worth reading, especially if you made it all the way through this!"
   }
 ]
