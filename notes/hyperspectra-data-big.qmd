@@ -1,0 +1,33 @@
+---
+title: "Hyperspectral data is big!"
+description: "Development trade-off in hyperspectral software"
+author: "Russell Rogers"
+date: 2026-10-03
+draft: true
+categories:
+  - hyperspectral
+---
+
+## The question
+
+What made me look at this?
+
+## What I did
+
+Enough information to understand or reproduce the test. This does not need to become a journal-style Methods section.
+
+## What happened
+
+Put the important figure, table or result here.
+
+## What I think it means
+
+Interpret the result. Separate observation from interpretation where that distinction matters.
+
+## Caveats
+
+What should a reader *not* conclude from this?
+
+## Code / data / references
+
+Links or citations if useful. Omit this section when it adds nothing.

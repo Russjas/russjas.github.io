@@ -1,0 +1,29 @@
+---
+title: "Russell Rogers: Things not worth a paper"
+page-layout: full
+listing:
+  contents: notes
+  sort: "date desc"
+  type: default
+  categories: true
+  max-items: 3
+  feed: true
+---
+
+I have a background in geology, and have become a bit fanatical about hyperspectral imagery, 
+particularly core scanning.
+
+This site will serve three purposes:  
+  
+- Training material: my public, curated version of my "old_talks" | "nice_figures" folders.   
+- Software: Manuals and how-to's for using my code projects (Maybe. Eventually. Sorry.) 
+- Notes: I tend to write long [Linkedin](https://www.linkedin.com/in/russell-j-rogers/) posts on technical observations. Here I can make them 
+longer. With more pictures.
+Some might be worth reading.  
+
+I have a degree in geology from the University of Leicester and an MSc from INRS, Université du Québec. 
+I have worked in geoscience since 2010 and currently work at Geological Survey Ireland.
+
+The opinions and positions expressed on this site are wholly my own.
+
+## Recent notes

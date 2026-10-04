@@ -1,0 +1,26 @@
+/* Deliberately light customization. Keep the site content-first. */
+
+:root {
+  --content-max-width: 860px;
+}
+
+main.content {
+  max-width: var(--content-max-width);
+}
+
+.quarto-title-banner {
+  padding-top: 2.5rem;
+  padding-bottom: 2rem;
+}
+
+blockquote {
+  font-size: 1.05rem;
+}
+
+.navbar-brand {
+  font-weight: 600;
+}
+
+.listing-description {
+  max-width: 70ch;
+}

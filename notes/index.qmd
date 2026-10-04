@@ -1,0 +1,16 @@
+---
+title: "Notes"
+description: "Short investigations, technical explanations, useful failures and things I wanted to work out."
+listing:
+  contents: .
+  sort: "date desc"
+  type: default
+  categories: true
+  feed: true
+---
+
+These are deliberately not papers. They are a public notebook: small pieces of work that seem worth making 
+findable and permanent.
+
+Some are analyses. Some are explanations. Some are records of an unexpected result. 
+The level of polish varies with the problem.

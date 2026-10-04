@@ -1,0 +1,11 @@
+/.quarto/
+/_site/
+.DS_Store
+Thumbs.db
+
+**/*.quarto_ipynb
+/scratch
+*.npy
+*.npz
+*.bil
+*.raw

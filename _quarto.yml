@@ -1,0 +1,35 @@
+project:
+  type: website
+
+website:
+  title: "Russell Rogers"
+  site-url: "https://russjas.github.io"
+  description: "Geoscience and hyperspectral imaging"
+  search: true
+  navbar:
+    left:
+      - text: "Notes"
+        href: notes/index.qmd
+      - text: "Training"
+        href: training/index.qmd
+      - text: "Software"
+        href: software/index.qmd
+    right:
+      - icon: github
+        href: "https://github.com/Russjas"
+        aria-label: GitHub
+  page-footer:
+    left: "Personal site by Russell Rogers."
+    right: "Thoughts expressed are solely my own."
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    code-copy: true
+    code-overflow: wrap
+    anchor-sections: true
+
+execute:
+  freeze: auto
