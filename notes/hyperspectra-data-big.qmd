@@ -140,5 +140,5 @@ This is the minimum dataset needed to deterministically reproduce a fully analys
 and archive the minimum when you are done. The rehydrate process is the time penalty up-front when you open an archive, then you are back to working
 iteratively on memmaps.  
 
-The [Original Linkedin post](https://www.linkedin.com/posts/russell-j-rogers_hyperspectral-activity-7428891479508451328-QGRn?utm_source=share&utm_medium=member_desktop&rcm=ACoAAAklDkwBrjSwAs3hDy047UEHocsJbEKoxY0) 
+The [Original Linkedin post](https://www.linkedin.com/posts/russell-j-rogers_hyperspectral-activity-7428891479508451328-QGRn?) 
 had some good points made by commenters that are worth reading, especially if you made it all the way through this!
