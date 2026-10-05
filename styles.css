@@ -24,3 +24,7 @@ blockquote {
 .listing-description {
   max-width: 70ch;
 }
+
+figure.figure {
+  text-align: center !important;
+}
