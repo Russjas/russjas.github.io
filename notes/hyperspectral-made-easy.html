@@ -6,9 +6,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Short investigations, technical explanations, useful failures and things I wanted to work out.">
+<meta name="author" content="Russell Rogers">
+<meta name="dcterms.date" content="2026-10-03">
+<meta name="description" content="A shallow dive into CoreSpecViewer.">
 
-<title>Notes – Russell Rogers</title>
+<title>Hyperspectral core scanning interpretation made easy - sort of! – Russell Rogers</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -37,8 +39,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -49,6 +49,9 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-890df4807d457dbc410f87df85df408d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -76,35 +79,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-date','listing-title','listing-author','listing-image','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-date","listing-title","listing-author","listing-image","listing-description","listing-categories"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
@@ -137,7 +111,7 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../styles.css">
-<link rel="alternate" type="application/rss+xml" title="Russell Rogers" href="index.xml" data-external="1"></head>
+</head>
 
 <body class="nav-fixed quarto-light">
 
@@ -157,7 +131,7 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="../notes/index.html" aria-current="page"> 
+    <a class="nav-link" href="../notes/index.html"> 
 <span class="menu-text">Notes</span></a>
   </li>  
   <li class="nav-item">
@@ -187,26 +161,53 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Q29yZVNwZWNWaWV3ZXI=">CoreSpecViewer <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Q29yZVNwZWNWaWV3ZXIlMjBndWlkZXM=">CoreSpecViewer guides <span class="quarto-category-count">(1)</span></div><div class="category" data-category="aHlwZXJzcGVjdHJhbA==">hyperspectral <span class="quarto-category-count">(2)</span></div><div class="category" data-category="aW50ZXJwcmV0YXRpb24=">interpretation <span class="quarto-category-count">(1)</span></div></div></div>
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#opening-raw-data" id="toc-opening-raw-data" class="nav-link active" data-scroll-target="#opening-raw-data">Opening raw data</a></li>
+  <li><a href="#pre-processing-raw-data" id="toc-pre-processing-raw-data" class="nav-link" data-scroll-target="#pre-processing-raw-data">Pre-processing raw data</a></li>
+  <li><a href="#early-exploration" id="toc-early-exploration" class="nav-link" data-scroll-target="#early-exploration">Early exploration</a></li>
+  <li><a href="#take-away" id="toc-take-away" class="nav-link" data-scroll-target="#take-away">Take-Away</a></li>
+  <li><a href="#data-and-licence" id="toc-data-and-licence" class="nav-link" data-scroll-target="#data-and-licence">Data and licence</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Notes</h1>
-</div>
+<h1 class="title">Hyperspectral core scanning interpretation made easy - sort of!</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">hyperspectral</div>
+    <div class="quarto-category">interpretation</div>
+    <div class="quarto-category">CoreSpecViewer guides</div>
+  </div>
+  </div>
 
 <div>
   <div class="description">
-    Short investigations, technical explanations, useful failures and things I wanted to work out.
+    A shallow dive into CoreSpecViewer.
   </div>
 </div>
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Russell Rogers </p>
+          </div>
+  </div>
     
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 3, 2026</p>
+    </div>
+  </div>
   
     
   </div>
@@ -216,83 +217,223 @@ window.Quarto = {
 </header>
 
 
-<p>These are deliberately not papers. They are a public notebook: small pieces of work that seem worth making findable and permanent.</p>
-<p>Some are analyses. Some are explanations. Some are records of an unexpected result. The level of polish varies with the problem.</p>
-
-
-
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="aHlwZXJzcGVjdHJhbCUyQ0NvcmVTcGVjVmlld2Vy" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1791188136692" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1056">
-<div class="thumbnail"><a href="../notes/hyperspectra-data-big.html" class="no-external">
-
-<div class="listing-item-img-placeholder card-img-top" >&nbsp;</div>
-
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../notes/hyperspectra-data-big.html" class="no-external">Hyperspectral data is big!</a>
-</h3>
-<div class="listing-categories">
-
-<div class="listing-category" onclick="window.quartoListingCategory('aHlwZXJzcGVjdHJhbA=='); return false;">hyperspectral</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Q29yZVNwZWNWaWV3ZXI='); return false;">CoreSpecViewer</div>
-
+<p>Hyperspectral core scanning can be daunting for the average geologist. The file types won’t be something you have used before, you may not even recognise them. You will be looking for jpegs or tiffs, but the chances are you will get a directory of many files with <code>.dat</code>, <code>.bil</code>, or <code>.raw</code> extensions.</p>
+<p><a href="https://github.com/Russjas/CoreSpecViewer">CoreSpecViewer</a> simplifies this. It ingests multi-file directories directly: Specim Lumo exports, which it was built for, and other acquisition formats with a little more manual input.</p>
+<p>All of the examples in this article are from core scanned by the Alberta Energy Regulator (AER) <a href="https://experience.arcgis.com/experience/1167cc6050f142bdb14a3a6c58e0f584/#data_s=id%3AdataSource_1-186dd8a4977-layer-6%3A724">here</a>.</p>
+<p>I have randomly chosen Hole NWG-05-03, box 303.</p>
+<p><a href="https://aerccgrsprdmindat02.blob.core.windows.net/core-scanning/HSI/NWG-05-03/NWG-05-03_SWIR.zip"><em>This</em></a> <em>is the hole. It is 13GB of SWIR data, be warned.</em></p>
+<section id="opening-raw-data" class="level3">
+<h3 class="anchored" data-anchor-id="opening-raw-data">Opening raw data</h3>
+<p>CoreSpecViewer exposes a number of data open options through it’s load dialogue.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="hyperspectral-made-easy-ims/open_dialogue.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="The CoreSpecViewer load dialogue."><img src="hyperspectral-made-easy-ims/open_dialogue.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="The CoreSpecViewer load dialogue."></a></p>
+</figure>
 </div>
-<div class="delink listing-description"><a href="../notes/hyperspectra-data-big.html" class="no-external">
-<p>Development trade-offs in hyperspectral software</p>
-</a></div>
+<figcaption>The CoreSpecViewer load dialogue.</figcaption>
+</figure>
 </div>
-<div class="metadata">
-<a href="../notes/hyperspectra-data-big.html" class="no-external">
-<div class="listing-date">
-Oct 3, 2026
+<p>Six different load modes</p>
+<ul>
+<li>Open processed dataset</li>
+<li>Open hole directory</li>
+</ul>
+<p>These two refer to CoreSpecViewer’s own created data files, these files are what get saved after you have worked with a scan in the software.</p>
+<ul>
+<li>Open raw dataset from Lumo output directory</li>
+<li>Open raw dataset from individual ENVI files</li>
+</ul>
+<p>These are for raw data from core scans. CoreSpecViewer will expect <em>at least</em> six files.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>File</th>
+<th>Extension</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>&lt;hole_id_box_number&gt;</code></td>
+<td>.hdr</td>
+<td>Header file for the core scan</td>
+</tr>
+<tr class="even">
+<td><code>&lt;hole_id_box_number&gt;</code></td>
+<td>.raw, .bil, .bsq, .bip, etc</td>
+<td>Binary file for the core scan data</td>
+</tr>
+<tr class="odd">
+<td>WHITE_<code>&lt;hole_id_box_number&gt;</code></td>
+<td>.hdr</td>
+<td>Header file for the white reference</td>
+</tr>
+<tr class="even">
+<td>WHITE_<code>&lt;hole_id_box_number&gt;</code></td>
+<td>.raw, .bil, .bsq, .bip, etc</td>
+<td>Binary file for the white reference</td>
+</tr>
+<tr class="odd">
+<td>DARK_<code>&lt;hole_id_box_number&gt;</code></td>
+<td>.hdr</td>
+<td>Header file for the dark reference</td>
+</tr>
+<tr class="even">
+<td>DARK_<code>&lt;hole_id_box_number&gt;</code></td>
+<td>.raw, .bil, .bsq, .bip, etc</td>
+<td>Binary file for the dark reference</td>
+</tr>
+<tr class="odd">
+<td><code>&lt;hole_id_box_number&gt;</code></td>
+<td>.xml</td>
+<td>metadata file - optional</td>
+</tr>
+</tbody>
+</table>
+<p>As I built CoreSpecViewer to work with data from the Specim Lumo acquisition software, clicking “from Lumo output directory” just requires the whole output directory, and all of the file discovery is automated and the metadata is parsed nicely.</p>
+<p>If your data was acquired any other way, or your directory structure got mangled, the “from ENVI files” allows you to browse to each required file. The XML will be brute force parsed, but maybe not effectively, and CoreSpecViewer will prompt for the required metadata (hole id, box number, from depth, to depth).</p>
+<ul>
+<li>Open reflectance data</li>
+</ul>
+<p>This button allows you to open a core scan that has already been converted to reflectance and stored in an ENVI file. It will also support existing masks (depending on the format).</p>
+<ul>
+<li>Open archive file</li>
+</ul>
+<p>This is another file type produced by CoreSpecViewer, the need for which is discussed in this <a href="../notes/hyperspectra-data-big.html">note</a></p>
+</section>
+<section id="pre-processing-raw-data" class="level3">
+<h3 class="anchored" data-anchor-id="pre-processing-raw-data">Pre-processing raw data</h3>
+<p>With hyperspectral data, you cannot just open the file and start interpreting the data, that would be far too easy. The cameras themselves will <em>usually</em> handle some geometric corrections, any spectral binning and some other correction before you get any data.<br>
+That just leaves correcting the radiance data to reflectance, which is why 6 files are needed.</p>
+<p><span class="math display">\[
+Reflectance = \frac{Data-DarkReference}{WhiteReference-DarkReference}
+\]</span></p>
+<p>BUT! CoreSpecViewer handles all of this for you! If you want to see the implementation it is <a href="https://github.com/Russjas/CoreSpecViewer/blob/baa9a60ee1a77c17661bb5322a23ef603d4a61b3/app/spectral_ops/IO.py#L295">here</a></p>
+<p>Simply find your directory, or selection of files, click load and voilà</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="hyperspectral-made-easy-ims/uncropped_core.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="A reflectance corrected core box, at the click of a button"><img src="hyperspectral-made-easy-ims/uncropped_core.webp" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="A reflectance corrected core box, at the click of a button"></a></p>
+</figure>
 </div>
-<div class="listing-author">
-Russell Rogers
+<figcaption>A reflectance corrected core box, at the click of a button</figcaption>
+</figure>
 </div>
-</a>
+<p>As this is python application, all of the details of the reflectance correction performed are in the source and parts of the configuration is adjustable in the UI. All of the configuration is adjustable in the source code.</p>
+<p>This raw data can be cropped in the UI, a mask can be created using a variety of methods, and the pre-processing pipeline completed with a few button clicks:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="hyperspectral-made-easy-ims/cropped-and-masked.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="View of the visualise window after masking tools have been used."><img src="hyperspectral-made-easy-ims/cropped-and-masked.webp" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="View of the visualise window after masking tools have been used."></a></p>
+</figure>
 </div>
+<figcaption>View of the visualise window after masking tools have been used.</figcaption>
+</figure>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="aHlwZXJzcGVjdHJhbCUyQ2ludGVycHJldGF0aW9uJTJDQ29yZVNwZWNWaWV3ZXIlMjBndWlkZXM=" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1791188136693" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1354">
-<div class="thumbnail"><a href="../notes/hyperspectral-made-easy.html" class="no-external">
+<p>This image is fully interactive, and individual pixel spectra can be examined using mouse clicks.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="hyperspectral-made-easy-ims/pixel-vis.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Examine reflectance specrta or continuum-removed spectra"><img src="hyperspectral-made-easy-ims/pixel-vis.webp" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="Examine reflectance specrta or continuum-removed spectra"></a></p>
+</figure>
+</div>
+<figcaption>Examine reflectance specrta or continuum-removed spectra</figcaption>
+</figure>
+</div>
+<p>So far, so easy, but we haven’t actually learned anything about our core yet.</p>
+<p>CoreSpecViewer has a number of tools to actually extract information from the core. I am not familiar with the geology of Alberta, or this drillhole, I am just using free data selected at random so…these interpretations will be less valid than those of a geologist who knows the geology!</p>
+</section>
+<section id="early-exploration" class="level3">
+<h3 class="anchored" data-anchor-id="early-exploration">Early exploration</h3>
+<p>I will perform a quick unsupervised clustering to see what variation my core has:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="hyperspectral-made-easy-ims/clustering.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="K-means output using 5 clusters for 50 iterations"><img src="hyperspectral-made-easy-ims/clustering.webp" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="K-means output using 5 clusters for 50 iterations"></a></p>
+</figure>
+</div>
+<figcaption>K-means output using 5 clusters for 50 iterations</figcaption>
+</figure>
+</div>
+<p>I used the default settings of 5 clusters for 50 iterations (these will obviously need tweaking with geological knowledge). The image shows that the core is dominated by 3 main mineralogical domains (Classes 3, 2, and 1) with small distinct “blobs” of class 4. But what are the classes? How different are they?</p>
+<p>We can interrogate the cluster centres:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="hyperspectral-made-easy-ims/cluster-centres.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Viewing the cluster centres as spectra"><img src="hyperspectral-made-easy-ims/cluster-centres.webp" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="Viewing the cluster centres as spectra"></a></p>
+</figure>
+</div>
+<figcaption>Viewing the cluster centres as spectra</figcaption>
+</figure>
+</div>
+<p>The spectra for Class 1 (blue line), Class 2 (orange line) and Class 3 (green line) are very similar. There are differences in intensity at shorter wavelengths (which explains the variation in the false colour image), but they all have the same features with varying depths. Class 4 (red line) is different, while it shares the shorter wavelength features as the other classes, it has a distinctly different feature around 2335nm.</p>
+<p>Now that we know a little bit more about the spectral variation in the core, we can try to simply match these cluster centres to spectra from the Ecostress library.</p>
+<p><em>Note, I didnt save the data, and when I came back to it I had to start from raw, thus a different mask and the clustering came out differently. Don’t be me, the save button is right there!</em></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="hyperspectral-made-easy-ims/cluster-matches.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Cluster centre table after matching against library spectra using three metrics"><img src="hyperspectral-made-easy-ims/cluster-matches.webp" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="Cluster centre table after matching against library spectra using three metrics"></a></p>
+</figure>
+</div>
+<figcaption>Cluster centre table after matching against library spectra using three metrics</figcaption>
+</figure>
+</div>
+<p>The direct library matches are giving us a mixture of usefully recognised minerals and nonsense. The matches have been performed using three different metrics; Pearson correlation, Spectral Angle Mapping and Modified Spectral Angle Mapping.</p>
+<p>Class 4 is confidently identified as Calcite by two of the three metrics, and Classes 2 and 3 are identified as Montmorillonite. Class 1 is identified as elemental Sulfur by the Pearson correlation which is…unlikely. This class is clearly being matched on noise, and doesn’t reach the threshold for identification in the other two methods.</p>
+<p>We can also just directly compare each individual spectra against the library directly, using any of the three techniques to produce a mineral map.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="hyperspectral-made-easy-ims/full-lib-minmap.webp" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Direct mineral mapping against full library"><img src="hyperspectral-made-easy-ims/full-lib-minmap.webp" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%" alt="Direct mineral mapping against full library"></a></p>
+</figure>
+</div>
+<figcaption>Direct mineral mapping against full library</figcaption>
+</figure>
+</div>
+<p>Again a mixture of usefully recognised minerals and nonsense.</p>
+</section>
+<section id="take-away" class="level3">
+<h3 class="anchored" data-anchor-id="take-away">Take-Away</h3>
+<p>In under 10 minutes, without writing code, we can open, correct and interpret hyperspectral core scanning data, easily!</p>
+<p>I can <em>confidently</em> say that there is <em>probably</em> some carbonate in discrete areas and the rest is <em>probably</em> some kind of clay or mica, and the key scientific conclusion in everything ever done: <strong>Further work is needed</strong>.</p>
+<p>To go further, and be more confident in your interpretations you will need to;</p>
+<ul>
+<li>examine the individual features (tools exist in CoreSpecViewer),</li>
+<li>curate the library to ensure matches are checked against realistic options (tools exist in CoreSpecViewer),</li>
+<li>use your own library (open it in CoreSpecViewer),</li>
+<li>select spectra from your data and build your own library (tools exist in CoreSpecViewer).</li>
+</ul>
+<p>That’s the point: Hyperspectral interpretation still requires geologists, not just algorithms — but the barrier to entry shouldn’t be the software.</p>
+<p>If you have hyperspectral core scanning data in raw Lumo output files, check out CoreSpecViewer and send me all your complaints!</p>
+<p>If you have hyperspectral core scanning data from other acquisition methods, let’s see if we can collaborate to extend CoreSpecViewer to smooth file discovery and metadata parsing!</p>
+<p>If you don’t have any data, but want to play with the software, there are links to some open source data on the GitHub landing page.</p>
+<p>The <a href="https://www.linkedin.com/pulse/hyperspectral-core-scanning-interpretation-made-easy-russell-rogers-kyd1e/">Original Linkedin post.</a></p>
+</section>
+<section id="data-and-licence" class="level3">
+<h3 class="anchored" data-anchor-id="data-and-licence">Data and licence</h3>
+<p>The hyperspectral core scans used in this note (hole NWG-05-03, box 303) are published by the Alberta Geological Survey (AGS) and were downloaded from:</p>
+<p>Alberta Geological Survey (2023): Core Data Interactive Map; Alberta Energy Regulator / Alberta Geological Survey, AER/AGS Interactive App or Map 014, <a href="https://ags.aer.ca/publications/all-publications/iam-014" class="uri">https://ags.aer.ca/publications/all-publications/iam-014</a> [accessed August 2026].</p>
+<p>The scanning programme is indexed in Spectrum Geosciences Ltd.&nbsp;and TerraCore Geospectral Imaging (2026): Index to hyperspectral core scanning imagery for mineral core from the Athabasca Basin, Canadian Shield, and Western Canada Sedimentary Basin in Alberta; Alberta Energy Regulator / Alberta Geological Survey, AER/AGS Special Report 129, 15 p.</p>
+<p>Contains information licensed under the <a href="https://open.alberta.ca/licence">Open Government Licence – Alberta</a>.</p>
 
-<p class="card-img-top"><img loading='lazy' src="hyperspectral-made-easy-ims/open_dialogue.png" alt="The CoreSpecViewer load dialogue."  class="thumbnail-image card-img"/></p>
 
-</a></div>
-<div class="body">
-<h3 class="no-anchor listing-title">
-<a href="../notes/hyperspectral-made-easy.html" class="no-external">Hyperspectral core scanning interpretation made easy - sort of!</a>
-</h3>
-<div class="listing-categories">
+</section>
 
-<div class="listing-category" onclick="window.quartoListingCategory('aHlwZXJzcGVjdHJhbA=='); return false;">hyperspectral</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('aW50ZXJwcmV0YXRpb24='); return false;">interpretation</div>
-
-<div class="listing-category" onclick="window.quartoListingCategory('Q29yZVNwZWNWaWV3ZXIlMjBndWlkZXM='); return false;">CoreSpecViewer guides</div>
-
-</div>
-<div class="delink listing-description"><a href="../notes/hyperspectral-made-easy.html" class="no-external">
-<p>A shallow dive into CoreSpecViewer.</p>
-</a></div>
-</div>
-<div class="metadata">
-<a href="../notes/hyperspectral-made-easy.html" class="no-external">
-<div class="listing-date">
-Oct 3, 2026
-</div>
-<div class="listing-author">
-Russell Rogers
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">No matching items</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -707,6 +848,38 @@ Russell Rogers
 </div>
   </div>
 </footer>
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

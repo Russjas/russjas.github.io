@@ -1,15 +1,17 @@
 [
   {
-    "listing": "/notes/index.html",
-    "items": [
-      "/notes/hyperspectra-data-big.html"
-    ]
-  },
-  {
     "listing": "/index.html",
     "items": [
       "/notes/index.html",
-      "/notes/hyperspectra-data-big.html"
+      "/notes/hyperspectra-data-big.html",
+      "/notes/hyperspectral-made-easy.html"
+    ]
+  },
+  {
+    "listing": "/notes/index.html",
+    "items": [
+      "/notes/hyperspectra-data-big.html",
+      "/notes/hyperspectral-made-easy.html"
     ]
   }
 ]

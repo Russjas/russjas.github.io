@@ -1,38 +1,10 @@
 [
   {
-    "objectID": "notes/index.html",
-    "href": "notes/index.html",
-    "title": "Notes",
+    "objectID": "notes/hyperspectral-made-easy.html",
+    "href": "notes/hyperspectral-made-easy.html",
+    "title": "Hyperspectral core scanning interpretation made easy - sort of!",
     "section": "",
-    "text": "These are deliberately not papers. They are a public notebook: small pieces of work that seem worth making findable and permanent.\nSome are analyses. Some are explanations. Some are records of an unexpected result. The level of polish varies with the problem.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHyperspectral data is big!\n\n\n\nhyperspectral\n\nCoreSpecViewer\n\n\n\nDevelopment trade-offs in hyperspectral software\n\n\n\n\n\nOct 3, 2026\n\n\nRussell Rogers\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "training/index.html",
-    "href": "training/index.html",
-    "title": "Training",
-    "section": "",
-    "text": "Training, talks, assorted documents converted to web friendly formats.\nContent is coming, probably"
-  },
-  {
-    "objectID": "software/index.html",
-    "href": "software/index.html",
-    "title": "Software",
-    "section": "",
-    "text": "CoreSpecViewer\nAn open tool for working with hyperspectral drill-core imagery, from raw-data processing through visualisation, spectral exploration and downhole products.\nCoreSpecViewer repo\n\n\npython-tetracorder\nA port of the rules and evaluation logic of the Tetracorder algorithm to pure Python - with no guarantee or warranty!\npython-tetracorder repo\nThis is merely a translation of the expertise encoded in the phenomenal Tetracorder expert system. All citation and credit should go to: Roger N. Clark, Gregg A. Swayze, K. Eric Livo, Raymond F. Kokaly, Steve J. Sutley, J. Brad Dalton, Robert R. McDougal and Carol A. Gent, 2003, Imaging spectroscopy: Earth and planetary remote sensing with the USGS Tetracorder and expert systems, Journal of Geophysical Research, Vol 108."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Russell Rogers: Things not worth a paper",
-    "section": "",
-    "text": "I have a background in geology, and have become a bit fanatical about hyperspectral imagery, particularly core scanning.\nThis site will serve three purposes:\nI have a degree in geology from the University of Leicester and an MSc from INRS, Université du Québec. I have worked in geoscience since 2010 and currently work at Geological Survey Ireland.\nThe opinions and positions expressed on this site are wholly my own."
-  },
-  {
-    "objectID": "index.html#recent-notes",
-    "href": "index.html#recent-notes",
-    "title": "Russell Rogers: Things not worth a paper",
-    "section": "Recent notes",
-    "text": "Recent notes"
+    "text": "Hyperspectral core scanning can be daunting for the average geologist. The file types won’t be something you have used before, you may not even recognise them. You will be looking for jpegs or tiffs, but the chances are you will get a directory of many files with .dat, .bil, or .raw extensions.\nCoreSpecViewer simplifies this. It ingests multi-file directories directly: Specim Lumo exports, which it was built for, and other acquisition formats with a little more manual input.\nAll of the examples in this article are from core scanned by the Alberta Energy Regulator (AER) here.\nI have randomly chosen Hole NWG-05-03, box 303.\nThis is the hole. It is 13GB of SWIR data, be warned.\n\nOpening raw data\nCoreSpecViewer exposes a number of data open options through it’s load dialogue.\n\n\n\n\n\n\n\nThe CoreSpecViewer load dialogue.\n\n\nSix different load modes\n\nOpen processed dataset\nOpen hole directory\n\nThese two refer to CoreSpecViewer’s own created data files, these files are what get saved after you have worked with a scan in the software.\n\nOpen raw dataset from Lumo output directory\nOpen raw dataset from individual ENVI files\n\nThese are for raw data from core scans. CoreSpecViewer will expect at least six files.\n\n\n\n\n\n\n\n\nFile\nExtension\nDescription\n\n\n\n\n&lt;hole_id_box_number&gt;\n.hdr\nHeader file for the core scan\n\n\n&lt;hole_id_box_number&gt;\n.raw, .bil, .bsq, .bip, etc\nBinary file for the core scan data\n\n\nWHITE_&lt;hole_id_box_number&gt;\n.hdr\nHeader file for the white reference\n\n\nWHITE_&lt;hole_id_box_number&gt;\n.raw, .bil, .bsq, .bip, etc\nBinary file for the white reference\n\n\nDARK_&lt;hole_id_box_number&gt;\n.hdr\nHeader file for the dark reference\n\n\nDARK_&lt;hole_id_box_number&gt;\n.raw, .bil, .bsq, .bip, etc\nBinary file for the dark reference\n\n\n&lt;hole_id_box_number&gt;\n.xml\nmetadata file - optional\n\n\n\nAs I built CoreSpecViewer to work with data from the Specim Lumo acquisition software, clicking “from Lumo output directory” just requires the whole output directory, and all of the file discovery is automated and the metadata is parsed nicely.\nIf your data was acquired any other way, or your directory structure got mangled, the “from ENVI files” allows you to browse to each required file. The XML will be brute force parsed, but maybe not effectively, and CoreSpecViewer will prompt for the required metadata (hole id, box number, from depth, to depth).\n\nOpen reflectance data\n\nThis button allows you to open a core scan that has already been converted to reflectance and stored in an ENVI file. It will also support existing masks (depending on the format).\n\nOpen archive file\n\nThis is another file type produced by CoreSpecViewer, the need for which is discussed in this note\n\n\nPre-processing raw data\nWith hyperspectral data, you cannot just open the file and start interpreting the data, that would be far too easy. The cameras themselves will usually handle some geometric corrections, any spectral binning and some other correction before you get any data.\nThat just leaves correcting the radiance data to reflectance, which is why 6 files are needed.\n\\[\nReflectance = \\frac{Data-DarkReference}{WhiteReference-DarkReference}\n\\]\nBUT! CoreSpecViewer handles all of this for you! If you want to see the implementation it is here\nSimply find your directory, or selection of files, click load and voilà\n\n\n\n\n\n\n\nA reflectance corrected core box, at the click of a button\n\n\nAs this is python application, all of the details of the reflectance correction performed are in the source and parts of the configuration is adjustable in the UI. All of the configuration is adjustable in the source code.\nThis raw data can be cropped in the UI, a mask can be created using a variety of methods, and the pre-processing pipeline completed with a few button clicks:\n\n\n\n\n\n\n\nView of the visualise window after masking tools have been used.\n\n\nThis image is fully interactive, and individual pixel spectra can be examined using mouse clicks.\n\n\n\n\n\n\n\nExamine reflectance specrta or continuum-removed spectra\n\n\nSo far, so easy, but we haven’t actually learned anything about our core yet.\nCoreSpecViewer has a number of tools to actually extract information from the core. I am not familiar with the geology of Alberta, or this drillhole, I am just using free data selected at random so…these interpretations will be less valid than those of a geologist who knows the geology!\n\n\nEarly exploration\nI will perform a quick unsupervised clustering to see what variation my core has:\n\n\n\n\n\n\n\nK-means output using 5 clusters for 50 iterations\n\n\nI used the default settings of 5 clusters for 50 iterations (these will obviously need tweaking with geological knowledge). The image shows that the core is dominated by 3 main mineralogical domains (Classes 3, 2, and 1) with small distinct “blobs” of class 4. But what are the classes? How different are they?\nWe can interrogate the cluster centres:\n\n\n\n\n\n\n\nViewing the cluster centres as spectra\n\n\nThe spectra for Class 1 (blue line), Class 2 (orange line) and Class 3 (green line) are very similar. There are differences in intensity at shorter wavelengths (which explains the variation in the false colour image), but they all have the same features with varying depths. Class 4 (red line) is different, while it shares the shorter wavelength features as the other classes, it has a distinctly different feature around 2335nm.\nNow that we know a little bit more about the spectral variation in the core, we can try to simply match these cluster centres to spectra from the Ecostress library.\nNote, I didnt save the data, and when I came back to it I had to start from raw, thus a different mask and the clustering came out differently. Don’t be me, the save button is right there!\n\n\n\n\n\n\n\nCluster centre table after matching against library spectra using three metrics\n\n\nThe direct library matches are giving us a mixture of usefully recognised minerals and nonsense. The matches have been performed using three different metrics; Pearson correlation, Spectral Angle Mapping and Modified Spectral Angle Mapping.\nClass 4 is confidently identified as Calcite by two of the three metrics, and Classes 2 and 3 are identified as Montmorillonite. Class 1 is identified as elemental Sulfur by the Pearson correlation which is…unlikely. This class is clearly being matched on noise, and doesn’t reach the threshold for identification in the other two methods.\nWe can also just directly compare each individual spectra against the library directly, using any of the three techniques to produce a mineral map.\n\n\n\n\n\n\n\nDirect mineral mapping against full library\n\n\nAgain a mixture of usefully recognised minerals and nonsense.\n\n\nTake-Away\nIn under 10 minutes, without writing code, we can open, correct and interpret hyperspectral core scanning data, easily!\nI can confidently say that there is probably some carbonate in discrete areas and the rest is probably some kind of clay or mica, and the key scientific conclusion in everything ever done: Further work is needed.\nTo go further, and be more confident in your interpretations you will need to;\n\nexamine the individual features (tools exist in CoreSpecViewer),\ncurate the library to ensure matches are checked against realistic options (tools exist in CoreSpecViewer),\nuse your own library (open it in CoreSpecViewer),\nselect spectra from your data and build your own library (tools exist in CoreSpecViewer).\n\nThat’s the point: Hyperspectral interpretation still requires geologists, not just algorithms — but the barrier to entry shouldn’t be the software.\nIf you have hyperspectral core scanning data in raw Lumo output files, check out CoreSpecViewer and send me all your complaints!\nIf you have hyperspectral core scanning data from other acquisition methods, let’s see if we can collaborate to extend CoreSpecViewer to smooth file discovery and metadata parsing!\nIf you don’t have any data, but want to play with the software, there are links to some open source data on the GitHub landing page.\nThe Original Linkedin post.\n\n\nData and licence\nThe hyperspectral core scans used in this note (hole NWG-05-03, box 303) are published by the Alberta Geological Survey (AGS) and were downloaded from:\nAlberta Geological Survey (2023): Core Data Interactive Map; Alberta Energy Regulator / Alberta Geological Survey, AER/AGS Interactive App or Map 014, https://ags.aer.ca/publications/all-publications/iam-014 [accessed August 2026].\nThe scanning programme is indexed in Spectrum Geosciences Ltd. and TerraCore Geospectral Imaging (2026): Index to hyperspectral core scanning imagery for mineral core from the Athabasca Basin, Canadian Shield, and Western Canada Sedimentary Basin in Alberta; Alberta Energy Regulator / Alberta Geological Survey, AER/AGS Special Report 129, 15 p.\nContains information licensed under the Open Government Licence – Alberta."
   },
   {
     "objectID": "notes/hyperspectra-data-big.html",
@@ -75,5 +47,40 @@
     "title": "Hyperspectral data is big!",
     "section": "“Conclusions”…",
     "text": "“Conclusions”…\nThis conclusion depends on my stack.\n“You fool!”, I hear you cry, “you wrote it in Python! Of course it is slow!”\nYou would not be wrong. Derivation could be pushed into compiled kernels, rewritten in another language, made blazingly fast. If continuum removal took one second instead of ten, the access-count argument would shrink a lot and I would revisit this. Maybe the commercial software world has already solved it. But Python gives me too much (NumPy, SciPy, hylite) for me to move away from it, and with this stack, disk wins.\nIn a nod to the fact disk caching doubles the storage CoreSpecViewer has an archive file type for long-term storage. This is the minimum dataset needed to deterministically reproduce a fully analysed box. Cache everything while you are working, and archive the minimum when you are done. The rehydrate process is the time penalty up-front when you open an archive, then you are back to working iteratively on memmaps.\nThe Original Linkedin post had some good points made by commenters that are worth reading, especially if you made it all the way through this!"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Russell Rogers: Things not worth a paper",
+    "section": "",
+    "text": "I have a background in geology, and have become a bit fanatical about hyperspectral imagery, particularly core scanning.\nThis site will serve three purposes:\nI have a degree in geology from the University of Leicester and an MSc from INRS, Université du Québec. I have worked in geoscience since 2010 and currently work at Geological Survey Ireland.\nThe opinions and positions expressed on this site are wholly my own."
+  },
+  {
+    "objectID": "index.html#recent-notes",
+    "href": "index.html#recent-notes",
+    "title": "Russell Rogers: Things not worth a paper",
+    "section": "Recent notes",
+    "text": "Recent notes"
+  },
+  {
+    "objectID": "software/index.html",
+    "href": "software/index.html",
+    "title": "Software",
+    "section": "",
+    "text": "CoreSpecViewer\nAn open tool for working with hyperspectral drill-core imagery, from raw-data processing through visualisation, spectral exploration and downhole products.\nCoreSpecViewer repo\n\n\npython-tetracorder\nA port of the rules and evaluation logic of the Tetracorder algorithm to pure Python - with no guarantee or warranty!\npython-tetracorder repo\nThis is merely a translation of the expertise encoded in the phenomenal Tetracorder expert system. All citation and credit should go to: Roger N. Clark, Gregg A. Swayze, K. Eric Livo, Raymond F. Kokaly, Steve J. Sutley, J. Brad Dalton, Robert R. McDougal and Carol A. Gent, 2003, Imaging spectroscopy: Earth and planetary remote sensing with the USGS Tetracorder and expert systems, Journal of Geophysical Research, Vol 108."
+  },
+  {
+    "objectID": "training/index.html",
+    "href": "training/index.html",
+    "title": "Training",
+    "section": "",
+    "text": "Training, talks, assorted documents converted to web friendly formats.\nContent is coming, probably"
+  },
+  {
+    "objectID": "notes/index.html",
+    "href": "notes/index.html",
+    "title": "Notes",
+    "section": "",
+    "text": "These are deliberately not papers. They are a public notebook: small pieces of work that seem worth making findable and permanent.\nSome are analyses. Some are explanations. Some are records of an unexpected result. The level of polish varies with the problem.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHyperspectral data is big!\n\n\n\nhyperspectral\n\nCoreSpecViewer\n\n\n\nDevelopment trade-offs in hyperspectral software\n\n\n\n\n\nOct 3, 2026\n\n\nRussell Rogers\n\n\n\n\n\n\n\n\n\n\n\n\nHyperspectral core scanning interpretation made easy - sort of!\n\n\n\nhyperspectral\n\ninterpretation\n\nCoreSpecViewer guides\n\n\n\nA shallow dive into CoreSpecViewer.\n\n\n\n\n\nOct 3, 2026\n\n\nRussell Rogers\n\n\n\n\n\nNo matching items"
   }
 ]
