@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://russjas.github.io/notes/hyperspectral-made-easy.html</loc>
-    <lastmod>2026-10-05T08:15:36.693Z</lastmod>
-  </url>
-  <url>
-    <loc>https://russjas.github.io/notes/hyperspectra-data-big.html</loc>
-    <lastmod>2026-10-05T08:15:36.692Z</lastmod>
-  </url>
-  <url>
-    <loc>https://russjas.github.io/index.html</loc>
-    <lastmod>2026-10-05T08:15:36.691Z</lastmod>
-  </url>
-  <url>
-    <loc>https://russjas.github.io/software/index.html</loc>
-    <lastmod>2026-10-05T08:15:36.693Z</lastmod>
-  </url>
-  <url>
-    <loc>https://russjas.github.io/training/index.html</loc>
-    <lastmod>2026-10-05T08:15:36.693Z</lastmod>
+    <loc>https://russjas.github.io/notes/Tetra-CORE-der.html</loc>
+    <lastmod>2026-10-10T16:43:57.607Z</lastmod>
   </url>
   <url>
     <loc>https://russjas.github.io/notes/index.html</loc>
-    <lastmod>2026-10-05T08:15:36.693Z</lastmod>
+    <lastmod>2026-10-10T16:43:57.608Z</lastmod>
+  </url>
+  <url>
+    <loc>https://russjas.github.io/training/index.html</loc>
+    <lastmod>2026-10-10T16:43:57.625Z</lastmod>
+  </url>
+  <url>
+    <loc>https://russjas.github.io/software/index.html</loc>
+    <lastmod>2026-10-10T16:43:57.625Z</lastmod>
+  </url>
+  <url>
+    <loc>https://russjas.github.io/index.html</loc>
+    <lastmod>2026-10-10T16:43:57.607Z</lastmod>
+  </url>
+  <url>
+    <loc>https://russjas.github.io/notes/hyperspectra-data-big.html</loc>
+    <lastmod>2026-10-10T16:43:57.607Z</lastmod>
+  </url>
+  <url>
+    <loc>https://russjas.github.io/notes/hyperspectral-made-easy.html</loc>
+    <lastmod>2026-10-10T16:43:57.608Z</lastmod>
   </url>
 </urlset>

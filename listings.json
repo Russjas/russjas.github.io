@@ -1,15 +1,17 @@
 [
   {
-    "listing": "/index.html",
+    "listing": "/notes/index.html",
     "items": [
-      "/notes/index.html",
+      "/notes/Tetra-CORE-der.html",
       "/notes/hyperspectra-data-big.html",
       "/notes/hyperspectral-made-easy.html"
     ]
   },
   {
-    "listing": "/notes/index.html",
+    "listing": "/index.html",
     "items": [
+      "/notes/index.html",
+      "/notes/Tetra-CORE-der.html",
       "/notes/hyperspectra-data-big.html",
       "/notes/hyperspectral-made-easy.html"
     ]
