@@ -340,7 +340,8 @@ even if it is very wrong about the actual minerals.
 ![Freiberg MLA Dolomite Abundance](tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Dolomite.png)
 :::  
   
-For Freiberg, Tetracorder Group 2 found mostly chlorite, calcite and dolomite (or actually a calcite-dolomite mixture).  
+For Freiberg, Tetracorder Group 2 found mostly chlorite, calcite and dolomite (or actually a calcite-dolomite mixture). 
+   
 The MLA data shows that calcite and chlorite are in fact abundant in this sample (hooray!), and the spatial pattern of 
 the lower calcite vein has been detected nicely by Tetracorder. The upper vein is less clear, but the MLA shows it is 
 quartz-rich (below), and quartz has no VNIR–SWIR features to detect, so the carbonate signal there is diluted rather 
