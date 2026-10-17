@@ -674,8 +674,8 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </div>
 </div>
 </div>
-<p>For Freiberg, Tetracorder Group 2 found mostly chlorite, calcite and dolomite (or actually a calcite-dolomite mixture).<br>
-The MLA data shows that calcite and chlorite are in fact abundant in this sample (hooray!), and the spatial pattern of the lower calcite vein has been detected nicely by Tetracorder. The upper vein is less clear, but the MLA shows it is quartz-rich (below), and quartz has no VNIR–SWIR features to detect, so the carbonate signal there is diluted rather than missed.</p>
+<p>For Freiberg, Tetracorder Group 2 found mostly chlorite, calcite and dolomite (or actually a calcite-dolomite mixture).</p>
+<p>The MLA data shows that calcite and chlorite are in fact abundant in this sample (hooray!), and the spatial pattern of the lower calcite vein has been detected nicely by Tetracorder. The upper vein is less clear, but the MLA shows it is quartz-rich (below), and quartz has no VNIR–SWIR features to detect, so the carbonate signal there is diluted rather than missed.</p>
 <p>The dolomite is a problem, though: the MLA has no dolomite at all. It does have an ankerite channel however, an Fe-bearing dolomite-group carbonate, which could plausibly sit spectrally between the calcite and dolomite references.</p>
 <div class="quarto-layout-panel" data-layout-ncol="3" data-fig-cap="Freiberg: Tetracorder Group 1 and 2 classifications compared with MLA Ankerite abundances.">
 <div class="quarto-layout-row">
@@ -2464,7 +2464,7 @@ That just leaves correcting the radiance data to reflectance, which is why 6 fil
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="aHlwZXJzcGVjdHJhbCUyQ2NvcmUlMjBzY2FubmluZyUyQ1RldHJhY29yZGVy" data-listing-date-sort="1792195200000" data-listing-file-modified-sort="1792276065462" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3301">
+<div class="quarto-post image-right" data-index="0" data-categories="aHlwZXJzcGVjdHJhbCUyQ2NvcmUlMjBzY2FubmluZyUyQ1RldHJhY29yZGVy" data-listing-date-sort="1792195200000" data-listing-file-modified-sort="1792276125359" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3303">
 <div class="thumbnail"><a href="../notes/tet-good-or-not.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/tet-good-or-not.html -->
@@ -2498,7 +2498,7 @@ Russell Rogers
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="aHlwZXJzcGVjdHJhbCUyQ21pbmVyYWwlMjBtYXBzJTJDdGV0cmFjb3JkZXI=" data-listing-date-sort="1791504000000" data-listing-file-modified-sort="1792276065452" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4726">
+<div class="quarto-post image-right" data-index="1" data-categories="aHlwZXJzcGVjdHJhbCUyQ21pbmVyYWwlMjBtYXBzJTJDdGV0cmFjb3JkZXI=" data-listing-date-sort="1791504000000" data-listing-file-modified-sort="1792276125353" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4726">
 <div class="thumbnail"><a href="../notes/Tetra-CORE-der.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/Tetra-CORE-der.html -->
@@ -2532,7 +2532,7 @@ Russell Rogers
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="aHlwZXJzcGVjdHJhbCUyQ0NvcmVTcGVjVmlld2Vy" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1792276065452" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1056">
+<div class="quarto-post image-right" data-index="2" data-categories="aHlwZXJzcGVjdHJhbCUyQ0NvcmVTcGVjVmlld2Vy" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1792276125353" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1056">
 <div class="thumbnail"><a href="../notes/hyperspectra-data-big.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/hyperspectra-data-big.html -->
@@ -2564,7 +2564,7 @@ Russell Rogers
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="aHlwZXJzcGVjdHJhbCUyQ2ludGVycHJldGF0aW9uJTJDQ29yZVNwZWNWaWV3ZXIlMjBndWlkZXM=" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1792276065453" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1354">
+<div class="quarto-post image-right" data-index="3" data-categories="aHlwZXJzcGVjdHJhbCUyQ2ludGVycHJldGF0aW9uJTJDQ29yZVNwZWNWaWV3ZXIlMjBndWlkZXM=" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1792276125353" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1354">
 <div class="thumbnail"><a href="../notes/hyperspectral-made-easy.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/hyperspectral-made-easy.html -->
@@ -2602,7 +2602,7 @@ Russell Rogers
 <div class="listing-no-matching d-none">No matching items</div>
 </div> ]]></description>
   <guid>https://russjas.github.io/notes/</guid>
-  <pubDate>Sat, 17 Oct 2026 22:28:27 GMT</pubDate>
+  <pubDate>Sat, 17 Oct 2026 22:28:58 GMT</pubDate>
 </item>
 </channel>
 </rss>
