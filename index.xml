@@ -10,7 +10,966 @@
 <atom:link href="https://russjas.github.io/index.xml" rel="self" type="application/rss+xml"/>
 <description>Geoscience and hyperspectral imaging</description>
 <generator>quarto-1.10.19</generator>
-<lastBuildDate>Fri, 09 Oct 2026 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Sat, 17 Oct 2026 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>So how good is Tetracorder for core? - Part 1</title>
+  <dc:creator>Russell Rogers</dc:creator>
+  <link>https://russjas.github.io/notes/tet-good-or-not.html</link>
+  <description><![CDATA[ 
+
+
+
+
+<section id="what-is-the-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-the-dataset">What is the dataset?</h2>
+<p>One of the difficulties with producing hyperspectral mineral maps is knowing whether they are right. We can make maps that look geologically plausible, but testing the actual mineral identifications requires independent mineralogical data.</p>
+<p>Fortunately, Thiele <em>et al.</em> (2026) have published exactly the sort of dataset we need.</p>
+<p>Their work combines Mineral Liberation Analysis (MLA) with co-registered hyperspectral imagery from 206 rock samples, covering a wide variety of geological settings. The hyperspectral data span the VNIR, SWIR, MWIR and LWIR, and the MLA provides independent measurements of the mineral assemblages.</p>
+<p>The authors use these data to train and benchmark machine-learning methods for predicting quantitative mineralogy from hyperspectral measurements.</p>
+<p>I’m interested in something rather different. What happens if we run the hyperspectral data through Tetracorder, using its existing mineral identification rules, and compare the resulting maps with the MLA?</p>
+<p>The dataset and associated publication are freely available:</p>
+<p>Publication</p>
+<p><a href="https://www.mdpi.com/2075-163X/16/7/674">Thiele, S.T., Kirsch, M., Frenzel, M., Tolosana-Delgado, R., Kamath, A.V., Guy, B.M., Kim, Y., Tuşa, L., Járóka, T. and Gloaguen, R. (2026): Predicting Mineralogy with Hyperspectral Data: A Benchmark Dataset and Machine Learning Framework to Enable Hyperspectral Geometallurgy; Minerals, 16(7), 674.</a></p>
+<p>Dataset</p>
+<p><a href="https://rodare.hzdr.de/record/4582">Thiele, S.T., Kirsch, M., Frenzel, M., Tolosana-Delgado, R., Kamath, A.V., Guy, B.M., Kim, Y., Tuşa, L., Járóka, T. and Gloaguen, R. (2026): Data for Upscaling Mineralogy with Hyperspectral Data: A Benchmark Dataset and Machine Learning Framework to Enable Hyperspectral Geometallurgy; RODARE, Helmholtz-Zentrum Dresden-Rossendorf.</a></p>
+</section>
+<section id="tetracorder" class="level2">
+<h2 class="anchored" data-anchor-id="tetracorder">Tetracorder</h2>
+<p>I am going to use three samples from the benchmark dataset for illustration during this note (must have images!):</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Hole</th>
+<th>Sample</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Collinstown</td>
+<td>bS24</td>
+</tr>
+<tr class="even">
+<td>Freiberg</td>
+<td>E030B_C12</td>
+</tr>
+<tr class="odd">
+<td>Bösenbrunn</td>
+<td>bBB_Sample8</td>
+</tr>
+</tbody>
+</table>
+<p>A little bit of context, taken from Thiele <em>et al</em> (2026):</p>
+<ul>
+<li><strong>Collinstown</strong>, Zn–Pb prospect in County Westmeath, Ireland, drilled by Teck Ireland. The mineralogical setting includes dolomitisation, hydrothermal alteration and Zn–Pb mineralisation associated with Irish-type deposits.<br>
+</li>
+<li><strong>Freiberg</strong>, Germany, drilled by Excellon Resources in 2020. Volcanics, metamorphics and hydrothermal alteration.</li>
+<li><strong>Bösenbrunn</strong>, Germany, drilled in the 1970s. Volcanics, volcaniclastics, sedimentary clastics and hydrothermal alteration.</li>
+</ul>
+<section id="running-tetracorder" class="level3">
+<h3 class="anchored" data-anchor-id="running-tetracorder">Running Tetracorder</h3>
+<p>The dataset is organised using the hylite ecosystem (hylite, hycore, hyshed). To run Tetracorder on each sample:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> pathlib <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Path</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> hycore</span>
+<span id="cb1-3"></span>
+<span id="cb1-4">shed_path <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> Path(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"/Path/to/Helmholtz_Benchmark_set/MLA/MLA.shed"</span>)</span>
+<span id="cb1-5">shed <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> hycore.loadShed(shed_path)</span>
+<span id="cb1-6"></span>
+<span id="cb1-7">box <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> shed.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;hole&gt;"</span>).get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"&lt;sample&gt;"</span>)</span></code></pre></div></div>
+<p>The hyperspectral data distributed in the dataset is stored as fractional reflectance with the full band range present and no smoothing. The pre-processing method described in the paper included clipping the first and last 10 bands and smoothing with a Savitzky-Golay algorithm using a first order polynomial with a window size of 5.</p>
+<p>To me, this seems like an unusual parameter choice for smoothing (a first-order Savitzky–Golay filter is effectively a moving average) and it may be more appropriate for the ML applications that the dataset was designed for. For Tetracorder, I pre-processed with a second-order polynomial and a window size of 11.</p>
+<p>As the Tetracorder rules only cover the VNIR-SWIR range, we will only use the Fenix data from the dataset.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> scipy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> sc</span>
+<span id="cb2-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb2-3"></span>
+<span id="cb2-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> tetracorderp <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> GroupEvaluator  </span>
+<span id="cb2-5"></span>
+<span id="cb2-6">WINDOW <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span></span>
+<span id="cb2-7">POLY <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span></span>
+<span id="cb2-8">SLICE <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">slice</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>)  </span>
+<span id="cb2-9"></span>
+<span id="cb2-10">fenix <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> box.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"FENIX"</span>)</span>
+<span id="cb2-11">identifier <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>box<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>holeName()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">_</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>box<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>name<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb2-12"></span>
+<span id="cb2-13">data <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> fenix.data[..., SLICE]</span>
+<span id="cb2-14">wavelengths <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> fenix.get_wavelengths()[SLICE]</span>
+<span id="cb2-15">fwhm <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.asarray(fenix.header.get_list(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fwhm"</span>), dtype<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)[SLICE]  </span>
+<span id="cb2-16"></span>
+<span id="cb2-17"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">assert</span> data.shape[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(wavelengths) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(fwhm), (</span>
+<span id="cb2-18">    <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"Shape mismatch: data=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>data<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>shape[<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">, "</span></span>
+<span id="cb2-19">    <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"wavelengths=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(wavelengths)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">, fwhm=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(fwhm)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span></span>
+<span id="cb2-20">)</span>
+<span id="cb2-21"></span>
+<span id="cb2-22"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Identify spectra with all finite bands - savgol chokes on NaNs</span></span>
+<span id="cb2-23">valid_pixels <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">all</span>(np.isfinite(data), axis<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb2-24"></span>
+<span id="cb2-25"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Allocate output, retaining NaNs for invalid pixels</span></span>
+<span id="cb2-26">run_cube <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.full(data.shape, np.nan, dtype<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>np.float32)</span>
+<span id="cb2-27"></span>
+<span id="cb2-28"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Smooth only valid spectra</span></span>
+<span id="cb2-29">run_cube[valid_pixels] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> sc.signal.savgol_filter(data[valid_pixels], WINDOW, POLY, axis<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)</span>
+<span id="cb2-30"></span>
+<span id="cb2-31">run <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> GroupEvaluator(</span>
+<span id="cb2-32">    run_cube,                                  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># The smoothed, pre-processed sample data</span></span>
+<span id="cb2-33">    wavelengths <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>,                        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># convert nm to um required by Tetracorder</span></span>
+<span id="cb2-34">    fwhm <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1000</span>,                               <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># convert nm to um required by Tetracorder</span></span>
+<span id="cb2-35">    mode<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"default"</span>,                            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Tetracorder's default preset thresholds (this work might lead to a new "core" preset)</span></span>
+<span id="cb2-36">    masked_pixels<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=~</span>valid_pixels,               <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># mask pixels with NaN                </span></span>
+<span id="cb2-37">    temperature<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">288</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">298</span>),                    <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Room temperature in kelvin</span></span>
+<span id="cb2-38">    disabled_materials<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>disabled_materials,     <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Core scanning specific disabled list (exclude water, ice, vegetation etc)</span></span>
+<span id="cb2-39">    disabled_groups<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>disabled_groups,           <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Core scanning specific disabled list (exclude water, ice, vegetation etc)</span></span>
+<span id="cb2-40">    disabled_cases<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>disabled_cases,             <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Core scanning specific disabled list (exclude water, ice, vegetation etc)</span></span>
+<span id="cb2-41">)</span>
+<span id="cb2-42">run.write_npz(OUTDIR <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> (identifier <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"_tetracorder_run_</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>WINDOW<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">_</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>POLY<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">.npz"</span>)) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># persist results for later evaluation</span></span></code></pre></div></div>
+<p>From the results, we can examine what Tetracorder thinks of these samples.</p>
+</section>
+<section id="tetracorder-results" class="level3">
+<h3 class="anchored" data-anchor-id="tetracorder-results">Tetracorder results</h3>
+<section id="collinstown" class="level4">
+<h4 class="anchored" data-anchor-id="collinstown">Collinstown</h4>
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_group1_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Group 1 — Raw winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_group1_raw_winners.png" class="img-fluid figure-img" alt="Group 1 — Raw winners"></a></p>
+<figcaption>Group 1 — Raw winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_group1_core_classification.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Group 1 — Core classification"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_group1_core_classification.png" class="img-fluid figure-img" alt="Group 1 — Core classification"></a></p>
+<figcaption>Group 1 — Core classification</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_group2_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Group 2 — Raw winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_group2_raw_winners.png" class="img-fluid figure-img" alt="Group 2 — Raw winners"></a></p>
+<figcaption>Group 2 — Raw winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_group2_core_classification.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Group 2 — Core classification"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_group2_core_classification.png" class="img-fluid figure-img" alt="Group 2 — Core classification"></a></p>
+<figcaption>Group 2 — Core classification</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="freiberg" class="level4">
+<h4 class="anchored" data-anchor-id="freiberg">Freiberg</h4>
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Frieberg_group1_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Group 1 — Raw winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Frieberg_group1_raw_winners.png" class="img-fluid figure-img" alt="Group 1 — Raw winners"></a></p>
+<figcaption>Group 1 — Raw winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Frieberg_group1_core_classification.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Group 1 — Core classification"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Frieberg_group1_core_classification.png" class="img-fluid figure-img" alt="Group 1 — Core classification"></a></p>
+<figcaption>Group 1 — Core classification</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Frieberg_group2_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Group 2 — Raw winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Frieberg_group2_raw_winners.png" class="img-fluid figure-img" alt="Group 2 — Raw winners"></a></p>
+<figcaption>Group 2 — Raw winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Frieberg_group2_core_classification.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Group 2 — Core classification"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Frieberg_group2_core_classification.png" class="img-fluid figure-img" alt="Group 2 — Core classification"></a></p>
+<figcaption>Group 2 — Core classification</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="bösenbrunn" class="level4">
+<h4 class="anchored" data-anchor-id="bösenbrunn">Bösenbrunn</h4>
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_group1_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Group 1 — Raw winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_group1_raw_winners.png" class="img-fluid figure-img" alt="Group 1 — Raw winners"></a></p>
+<figcaption>Group 1 — Raw winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_group1_core_classification.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Group 1 — Core classification"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_group1_core_classification.png" class="img-fluid figure-img" alt="Group 1 — Core classification"></a></p>
+<figcaption>Group 1 — Core classification</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_group2_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Group 2 — Raw winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_group2_raw_winners.png" class="img-fluid figure-img" alt="Group 2 — Raw winners"></a></p>
+<figcaption>Group 2 — Raw winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_group2_core_classification.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Group 2 — Core classification"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_group2_core_classification.png" class="img-fluid figure-img" alt="Group 2 — Core classification"></a></p>
+<figcaption>Group 2 — Core classification</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="initial-observations" class="level4">
+<h4 class="anchored" data-anchor-id="initial-observations">Initial observations</h4>
+<p>It is important that I explain the difference between the Tetracorder “Raw winners” and the “Core classifications” shown here. The classifications are lookup-based aggregations of the winning rules, not a second independent analysis. A class such as <code>calcite + dolomite</code> does not necessarily mean that both minerals have been independently identified, just that a spectrum measured from mixed material was the best match.</p>
+<p>Additionally the aggregation look-ups are slightly-less-than-arbitrary. I constructed them by grouping rule names and Tetracorder “materials” into minerals and mineral families - as such multiple spectral rules can contribute to the same geological class. This is also what native Tetracorder does with its rules, I have just built a table specific for core.</p>
+<p>The first thing to note is that the maps are not random noise. Across all three samples, Tetracorder produces spatially coherent classifications, with identifiable domains and boundaries. This is encouraging, although geological plausibility is only the first hurdle.</p>
+<p><strong>Collinstown</strong> is particularly interesting. Group 2 is remarkably consistent, identifying almost the entire sample as calcite or calcite + dolomite. Only two spectral rules are responsible for the result. Group 1 identifies a much more diverse assemblage, dominated by Fe²⁺ rules, siderite and amphibole. The two groups are not necessarily contradicting each other: they target different spectral features and can identify different components of the same assemblage.</p>
+<p><strong>Freiberg</strong> shows a different pattern. Group 1 is dominated by olivine, which seems suspicious, with small regions of other Fe-bearing minerals. Group 2 is more variable, identifying chlorite, calcite, dolomite and associated mineral combinations. The result suggests that Tetracorder is recognising a reasonably consistent alteration assemblage, although we cannot yet say how accurately it represents the measured mineralogy.</p>
+<p><strong>Bösenbrunn</strong> is rather different again. Group 1 produces a substantial variety of iron-related spectral identifications, particularly those associated with olivine (again, suspicious), iron-bearing minerals and broad Fe²⁺ absorptions. The broader classification map simplifies this into coherent domains dominated by olivine and Fe²⁺-related classes. Group 2, however, is dominated by chlorite, with a small area of chlorite + prehnite.</p>
+<p>So, this <em>looks</em> pretty good. We are getting coherent and (bar olivine?) reasonable results across two spectral domains - although Group 2 is “better” than Group 1 in a geological sense.</p>
+<p>But is it right? Correct? Accurate? However you want to characterise how much you trust results.</p>
+<p>This is precisely why having independent MLA measurements is valuable. The maps look convincing enough, but <strong>looking convincing is a very low bar for a mineral classification algorithm</strong>.</p>
+</section>
+</section>
+</section>
+<section id="mla-data" class="level2">
+<h2 class="anchored" data-anchor-id="mla-data">MLA data</h2>
+<p>The Mineral Liberation Analysis (MLA) provides an independent mineralogical characterisation of each sample.</p>
+<p>Unlike the categorical output from Tetracorder, the MLA data are quantitative. Each pixel contains estimated abundances for multiple minerals, rather than a single mineral identification.</p>
+<section id="dominant-mineral-maps" class="level3">
+<h3 class="anchored" data-anchor-id="dominant-mineral-maps">Dominant mineral maps</h3>
+<p>We can represent this information in several ways. The simplest is to assign each pixel the mineral with the highest abundance, producing a dominant mineral map. This provides a useful overview of the mineralogical distribution, but necessarily conceals any other minerals present.</p>
+<div class="quarto-layout-panel" data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_bS24_MLA_dominant.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Collinstown MLA dominant mineral"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_bS24_MLA_dominant.png" class="img-fluid figure-img" alt="Collinstown MLA dominant mineral"></a></p>
+<figcaption>Collinstown MLA dominant mineral</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Freiberg_E030B_C12_MLA_dominant.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Freiberg MLA dominant mineral"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Freiberg_E030B_C12_MLA_dominant.png" class="img-fluid figure-img" alt="Freiberg MLA dominant mineral"></a></p>
+<figcaption>Freiberg MLA dominant mineral</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_dominant.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Bösenbrunn MLA dominant mineral"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_dominant.png" class="img-fluid figure-img" alt="Bösenbrunn MLA dominant mineral"></a></p>
+<figcaption>Bösenbrunn MLA dominant mineral</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>A cursory examination of the dominant mineral maps is encouraging, particularly for Collinstown and Freiberg.</p>
+<p><strong>Collinstown</strong> is overwhelmingly calcite, with only a few pixels dominated by dolomite or barite. This is consistent with the strong carbonate response in Tetracorder Group 2. The dolomite-dominated pixels at the top of the sample also sit where Group 2 identified calcite + dolomite, although the dominant mineral map does not tell us how much dolomite might be present alongside calcite elsewhere.</p>
+<p><strong>Freiberg</strong> has a much more varied mineralogy, with substantial areas dominated by plagioclase, chlorite and calcite, alongside smaller areas of quartz and amphibole. The diagonal calcite band follows the carbonate band in Tetracorder Group 2 closely.</p>
+<p><strong>Bösenbrunn</strong> is dominated by chamosite (an iron-rich chlorite), with small regions of albite and occasional biotite. This is an interesting result given the apparent prevalence of chlorite in Tetracorder Group 2, although Group 1’s iron-related identifications will warrant closer examination.</p>
+<p>Perhaps unsurprisingly, olivine is not the dominant mineral in either Freiberg or Bösenbrunn!</p>
+<p>Plagioclase and albite dominate large parts of Freiberg and Bösenbrunn, but they have no diagnostic features in the VNIR–SWIR. A pixel that is mostly plagioclase with some chlorite will look like chlorite to Tetracorder, because chlorite is the only thing in it with an absorption to match. Spectral dominance and abundance dominance are not the same thing.</p>
+<p>So, these are only dominant mineral maps. They tell us which mineral has the greatest abundance at each pixel. By taking only the dominant mineral we have reduced a quantitative dataset to, effectively, a classification map, discarding what we actually need to test Tetracorder.</p>
+<p>The next step is therefore to examine the actual mineral abundances, which are harder to visualise, but that’s where the real test lies.</p>
+</section>
+<section id="mineral-abundance-maps" class="level3">
+<h3 class="anchored" data-anchor-id="mineral-abundance-maps">Mineral abundance maps</h3>
+<p><em>big image dump incoming</em></p>
+<section id="collinstown-1" class="level4">
+<h4 class="anchored" data-anchor-id="collinstown-1">Collinstown</h4>
+<div class="quarto-layout-panel" data-fig-cap="Collinstown: Tetracorder Group 2 classifications compared with MLA calcite and dolomite abundances." data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_group2_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Collinstown Tetracorder Group 2 winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_group2_raw_winners.png" class="img-fluid figure-img" alt="Collinstown Tetracorder Group 2 winners"></a></p>
+<figcaption>Collinstown Tetracorder Group 2 winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_bS24_MLA_Calcite.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17" title="Collinstown MLA Calcite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_bS24_MLA_Calcite.png" class="img-fluid figure-img" alt="Collinstown MLA Calcite Abundance"></a></p>
+<figcaption>Collinstown MLA Calcite Abundance</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_bS24_MLA_Dolomite.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18" title="Collinstown MLA Dolomite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_bS24_MLA_Dolomite.png" class="img-fluid figure-img" alt="Collinstown MLA Dolomite Abundance"></a></p>
+<figcaption>Collinstown MLA Dolomite Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>For Collinstown the only minerals identified by Tetracorder in Group 2 were calcite and dolomite. The MLA abundance maps show that calcite is abundant throughout, and that dolomite is locally more abundant at the top of the sample, exactly where Tetracorder identified the mixture. The calcite + dolomite pixels at the bottom of the sample have no obvious MLA counterpart, so that is one hit and one miss.</p>
+<p>The actual mineral abundances in the Collinstown sample are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Mineral</th>
+<th>Summed fractional abundance (pixel equivalents)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Calcite</td>
+<td>794.32</td>
+</tr>
+<tr class="even">
+<td>Barite</td>
+<td>40.36</td>
+</tr>
+<tr class="odd">
+<td>Pyrite</td>
+<td>12.84</td>
+</tr>
+<tr class="even">
+<td>Dolomite</td>
+<td>11.94</td>
+</tr>
+<tr class="odd">
+<td>Quartz</td>
+<td>9.51</td>
+</tr>
+<tr class="even">
+<td>Phengite</td>
+<td>8.88</td>
+</tr>
+<tr class="odd">
+<td>etc</td>
+<td>etc</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-layout-panel" data-fig-cap="Collinstown: Tetracorder Group 1 classifications compared with MLA barite and pyrite abundances." data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_group1_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19" title="Collinstown Tetracorder Group 1 winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_group1_raw_winners.png" class="img-fluid figure-img" alt="Collinstown Tetracorder Group 1 winners"></a></p>
+<figcaption>Collinstown Tetracorder Group 1 winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_bS24_MLA_Barite.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20" title="Collinstown MLA Barite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_bS24_MLA_Barite.png" class="img-fluid figure-img" alt="Collinstown MLA Barite Abundance"></a></p>
+<figcaption>Collinstown MLA Barite Abundance</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Collinstown_bS24_MLA_Pyrite.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21" title="Collinstown MLA Pyrite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Collinstown_bS24_MLA_Pyrite.png" class="img-fluid figure-img" alt="Collinstown MLA Pyrite Abundance"></a></p>
+<figcaption>Collinstown MLA Pyrite Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>In Collinstown, Group 1 found a range of Fe²⁺ responses, but is dominated by two rules: <code>generic.Fe2+nrw.actinolite</code> across the calcite matrix, and <code>siderite1</code> along a band running down the sample. That band follows the vein where the MLA has barite, pyrite and dolomite, and where calcite abundance drops.</p>
+<p>Neither mineral is right as named. There is no actinolite or amphibole channel in the Collinstown MLA, so it was either not present or not set up to be detected. The actinolite rule winning across nearly pure calcite looks like Group 1 fitting weak Fe²⁺ features (perhaps trace Fe in the calcite) to the closest reference it has.</p>
+<p>The siderite band is more interesting, because it follows a real mineralogical boundary. There is no siderite channel in the MLA data. Irish-type dolomite can be ferroan, and Fe²⁺ in a carbonate is exactly what a siderite reference would match, so it is tempting to say Group 1 is seeing an Fe-bearing carbonate in the vein. But dolomite is only a small fraction of this sample, and the MLA can’t confirm it. (Freiberg, below, is a cautionary tale about exactly this sort of explanation.)</p>
+<p>So Group 1 is separating the matrix from the vein. It is identifying the spatial pattern of the measured mineralogy, even if it is very wrong about the actual minerals.</p>
+</section>
+<section id="freiberg-1" class="level4">
+<h4 class="anchored" data-anchor-id="freiberg-1">Freiberg</h4>
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Freiberg: Tetracorder Group 2 classifications compared with MLA chlorite, calcite and dolomite abundances.">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Frieberg_group2_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22" title="Freiberg Tetracorder Group 2 winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Frieberg_group2_raw_winners.png" class="img-fluid figure-img" alt="Freiberg Tetracorder Group 2 winners"></a></p>
+<figcaption>Freiberg Tetracorder Group 2 winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Chlorite.png" class="lightbox" data-gallery="quarto-lightbox-gallery-23" title="Freiberg MLA Chlorite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Chlorite.png" class="img-fluid figure-img" alt="Freiberg MLA Chlorite Abundance"></a></p>
+<figcaption>Freiberg MLA Chlorite Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Calcite.png" class="lightbox" data-gallery="quarto-lightbox-gallery-24" title="Freiberg MLA Calcite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Calcite.png" class="img-fluid figure-img" alt="Freiberg MLA Calcite Abundance"></a></p>
+<figcaption>Freiberg MLA Calcite Abundance</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Dolomite.png" class="lightbox" data-gallery="quarto-lightbox-gallery-25" title="Freiberg MLA Dolomite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Dolomite.png" class="img-fluid figure-img" alt="Freiberg MLA Dolomite Abundance"></a></p>
+<figcaption>Freiberg MLA Dolomite Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>For Freiberg, Tetracorder Group 2 found mostly chlorite, calcite and dolomite (or actually a calcite-dolomite mixture).<br>
+The MLA data shows that calcite and chlorite are in fact abundant in this sample (hooray!), and the spatial pattern of the lower calcite vein has been detected nicely by Tetracorder, but it missed the upper vein.</p>
+<p>The dolomite is a problem, though: the MLA has no dolomite at all. It does have an ankerite channel however, an Fe-bearing dolomite-group carbonate, which could plausibly sit spectrally between the calcite and dolomite references.</p>
+<div class="quarto-layout-panel" data-fig-cap="Freiberg: Tetracorder Group 1 and 2 classifications compared with MLA Ankerite abundances." data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Frieberg_group2_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-26" title="Freiberg Tetracorder Group 2 winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Frieberg_group2_raw_winners.png" class="img-fluid figure-img" alt="Freiberg Tetracorder Group 2 winners"></a></p>
+<figcaption>Freiberg Tetracorder Group 2 winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Ankerite_0-0p2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-27" title="Freiberg MLA Ankerite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Ankerite_0-0p2.png" class="img-fluid figure-img" alt="Freiberg MLA Ankerite Abundance"></a></p>
+<figcaption>Freiberg MLA Ankerite Abundance</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Frieberg_group1_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-28" title="Freiberg Tetracorder Group 1 winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Frieberg_group1_raw_winners.png" class="img-fluid figure-img" alt="Freiberg Tetracorder Group 1 winners"></a></p>
+<figcaption>Freiberg Tetracorder Group 1 winners</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>But it doesn’t hold up. The ankerite is low in abundance (note the stretch: the maximum is 0.2) and spread through the matrix, not concentrated in the calcite vein. So the <code>calcite+dolomite.5</code> match remains unexplained. One alternative is mixing with chlorite: calcite’s main absorption is near 2.34 µm, dolomite’s near 2.32 µm, and chlorite has a Mg-OH feature around 2.33 µm, so a calcite–chlorite mixture could pull the apparent carbonate feature towards a calcite–dolomite intermediate. That is one to test properly rather than assert.</p>
+<p>Group 1 also has <code>siderite1</code> winners along the lower calcite vein, despite the MLA reporting almost no siderite. Group 1 is picking out the carbonate vein from the matrix, but not naming it correctly.</p>
+<div class="quarto-layout-panel" data-fig-cap="Freiberg: Tetracorder Group 1 classifications compared with MLA amphibole abundances." data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Frieberg_group1_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-29" title="Freiberg Tetracorder Group 1 winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Frieberg_group1_raw_winners.png" class="img-fluid figure-img" alt="Freiberg Tetracorder Group 1 winners"></a></p>
+<figcaption>Freiberg Tetracorder Group 1 winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Amphibole_0-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-30" title="Freiberg MLA Amphibole Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Amphibole_0-1.png" class="img-fluid figure-img" alt="Freiberg MLA Amphibole Abundance"></a></p>
+<figcaption>Freiberg MLA Amphibole Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Group 1 Tetracorder winners were dominated by olivine and actinolite. Unsurprisingly there was no olivine channel in the MLA data. There is no actinolite channel either, but the amphibole channel is the appropriate comparison, and here Tetracorder does well: the actinolite winners in the lower left sit on the highest MLA amphibole abundances.</p>
+<p>The actual mineral abundances in the Freiberg sample are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Mineral</th>
+<th>Summed fractional abundance (pixel equivalents)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Plagioclase</td>
+<td>281.44</td>
+</tr>
+<tr class="even">
+<td>Chlorite</td>
+<td>198.28</td>
+</tr>
+<tr class="odd">
+<td>Calcite</td>
+<td>135.11</td>
+</tr>
+<tr class="even">
+<td>Amphibole</td>
+<td>117.31</td>
+</tr>
+<tr class="odd">
+<td>Quartz</td>
+<td>65.69</td>
+</tr>
+<tr class="even">
+<td>Epidote</td>
+<td>28.45</td>
+</tr>
+<tr class="odd">
+<td>etc</td>
+<td>etc</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Freiberg: Tetracorder Group 1 classifications compared with MLA abundant minerals">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Frieberg_group1_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-31" title="Freiberg Tetracorder Group 1 winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Frieberg_group1_raw_winners.png" class="img-fluid figure-img" alt="Freiberg Tetracorder Group 1 winners"></a></p>
+<figcaption>Freiberg Tetracorder Group 1 winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Plagioclase_0-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-32" title="Freiberg MLA Plagioclase Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Plagioclase_0-1.png" class="img-fluid figure-img" alt="Freiberg MLA Plagioclase Abundance"></a></p>
+<figcaption>Freiberg MLA Plagioclase Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Quartz_0-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-33" title="Freiberg MLA Quartz Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Quartz_0-1.png" class="img-fluid figure-img" alt="Freiberg MLA Quartz Abundance"></a></p>
+<figcaption>Freiberg MLA Quartz Abundance</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Epidote_0-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-34" title="Freiberg MLA Epidote Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Freiberg_E030B_C12_MLA_Epidote_0-1.png" class="img-fluid figure-img" alt="Freiberg MLA Epidote Abundance"></a></p>
+<figcaption>Freiberg MLA Epidote Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>It is clear that plagioclase dominates this sample, with some quartz. These minerals do not have significant features in the spectral ranges covered by Tetracorder. Tetracorder is instead detecting the lower abundance VNIR-SWIR active minerals present in these pixels and getting it partly right and partly confused. Epidote and chlorite share absorptions near 2.25 and 2.34 µm, so the epidote is probably being absorbed into the chlorite identifications.</p>
+<p>The olivine is the clearest failure. It covers the upper part of the sample, where the MLA has plagioclase with chlorite and amphibole. The broad ~1 µm Fe²⁺ absorption from those minerals is plausibly, but incorrectly, being matched to an olivine reference.</p>
+</section>
+<section id="bösenbrunn-1" class="level4">
+<h4 class="anchored" data-anchor-id="bösenbrunn-1">Bösenbrunn</h4>
+<div class="quarto-layout-panel" data-fig-cap="Bösenbrunn: Tetracorder Group 2 classifications compared with MLA chlorite and prehnite abundances." data-layout-ncol="3">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_group2_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-35" title="Bösenbrunn Tetracorder Group 2 winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_group2_raw_winners.png" class="img-fluid figure-img" alt="Bösenbrunn Tetracorder Group 2 winners"></a></p>
+<figcaption>Bösenbrunn Tetracorder Group 2 winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Chlorite.png" class="lightbox" data-gallery="quarto-lightbox-gallery-36" title="Bösenbrunn MLA Chlorite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Chlorite.png" class="img-fluid figure-img" alt="Bösenbrunn MLA Chlorite Abundance"></a></p>
+<figcaption>Bösenbrunn MLA Chlorite Abundance</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Prehnite.png" class="lightbox" data-gallery="quarto-lightbox-gallery-37" title="Bösenbrunn MLA Prehnite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Prehnite.png" class="img-fluid figure-img" alt="Bösenbrunn MLA Prehnite Abundance"></a></p>
+<figcaption>Bösenbrunn MLA Prehnite Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>For Bösenbrunn Tetracorder Group 2 detected chlorite and a mixture of chlorite + prehnite.<br>
+The MLA shows that there is chlorite. Yay? Prehnite is really negligible in this sample, suggesting that the chlorite + prehnite match is Tetracorder’s best fit for some other mixture.</p>
+<div class="quarto-layout-panel" data-fig-cap="Bösenbrunn: Tetracorder Group 1 classifications compared with MLA actinolite abundances." data-layout-ncol="2">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_group1_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-38" title="Bösenbrunn Tetracorder Group 1 winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_group1_raw_winners.png" class="img-fluid figure-img" alt="Bösenbrunn Tetracorder Group 1 winners"></a></p>
+<figcaption>Bösenbrunn Tetracorder Group 1 winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Actinolite.png" class="lightbox" data-gallery="quarto-lightbox-gallery-39" title="Bösenbrunn MLA Actinolite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Actinolite.png" class="img-fluid figure-img" alt="Bösenbrunn MLA Actinolite Abundance"></a></p>
+<figcaption>Bösenbrunn MLA Actinolite Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Tetracorder Group 1 detected actinolite and olivine. Once again, the MLA did not have an olivine channel but it did have a specific actinolite channel. Actinolite is relatively low in abundance (around 10%), but it is present across most of the sample.</p>
+<p>That makes the actinolite identification look reasonable, but I would call it unresolved rather than a hit. The dominant mineral is chamosite, an Fe-rich chlorite, which also has a strong Fe²⁺ absorption, so the Group 1 may be naming actinolite what is in fact chlorite, even though it has chlorite references available.</p>
+<p>The actual mineral abundances in the Bösenbrunn sample are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Mineral</th>
+<th>Summed fractional abundance (pixel equivalents)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Chamosite Chl (Chlorite map above)</td>
+<td>311.58</td>
+</tr>
+<tr class="even">
+<td>Albite</td>
+<td>244.96</td>
+</tr>
+<tr class="odd">
+<td>Biotite Mica</td>
+<td>104.35</td>
+</tr>
+<tr class="even">
+<td>Titanite</td>
+<td>97.78</td>
+</tr>
+<tr class="odd">
+<td>Actinolite AM</td>
+<td>96.30</td>
+</tr>
+<tr class="even">
+<td>Quartz</td>
+<td>66.26</td>
+</tr>
+<tr class="odd">
+<td>etc</td>
+<td>etc</td>
+</tr>
+</tbody>
+</table>
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Bösenbrunn: Tetracorder Group 1 classifications compared with MLA abundant minerals">
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_group1_raw_winners.png" class="lightbox" data-gallery="quarto-lightbox-gallery-40" title="Bösenbrunn Tetracorder Group 1 winners"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_group1_raw_winners.png" class="img-fluid figure-img" alt="Bösenbrunn Tetracorder Group 1 winners"></a></p>
+<figcaption>Bösenbrunn Tetracorder Group 1 winners</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Albite_0-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-41" title="Bösenbrunn MLA Albite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Albite_0-1.png" class="img-fluid figure-img" alt="Bösenbrunn MLA Albite Abundance"></a></p>
+<figcaption>Bösenbrunn MLA Albite Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Biotite_0-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-42" title="Bösenbrunn MLA Biotite Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Biotite_0-1.png" class="img-fluid figure-img" alt="Bösenbrunn MLA Biotite Abundance"></a></p>
+<figcaption>Bösenbrunn MLA Biotite Abundance</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Quartz_0-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-43" title="Bösenbrunn MLA Quartz Abundance"><img src="https://russjas.github.io/notes/tet-good-or-not-ims/Bosenbrunn_bBB_Sample8_MLA_Quartz_0-1.png" class="img-fluid figure-img" alt="Bösenbrunn MLA Quartz Abundance"></a></p>
+<figcaption>Bösenbrunn MLA Quartz Abundance</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<p>Much of the Bösenbrunn mineralogy is made up of minerals that I would not expect Tetracorder to detect at all.</p>
+</section>
+</section>
+</section>
+<section id="so-how-good-is-it" class="level2">
+<h2 class="anchored" data-anchor-id="so-how-good-is-it">So, how good is it?</h2>
+<p>On three samples, the honest answer is “better than I expected, in some ways, and for some of the right reasons”.</p>
+<p>The SWIR rules (Group 2) found the right spectrally active mineral in all three samples: calcite in Collinstown, chlorite and carbonate in Freiberg, and chlorite in Bösenbrunn. In Collinstown and Freiberg, they also put the carbonate in roughly the right place.</p>
+<p>The VNIR Fe rules (Group 1) are much less reliable as mineral identifications. Olivine wins large areas of two samples that contain none, and actinolite wins across a nearly pure calcite. But Group 1 is not useless: its spatial patterns follow real mineralogical boundaries, and in both Collinstown and Freiberg the siderite winners pick out the carbonate veins from the matrix, even though the MLA has essentially no siderite.</p>
+<p>Across all three samples, a large fraction of the rock (plagioclase, albite, quartz) is invisible in the VNIR–SWIR. Tetracorder is identifying the minor, spectrally active phases in an otherwise spectrally neutral matrix, and any fair evaluation has to account for that.</p>
+<p>Obviously, this is very subjective! All of this looking between mineral maps and comparing spatial patterns is really fun, but what I need is an objective evaluation of Tetracorder’s performance against the full ground-truth dataset. That needs some care: Tetracorder classes have to be mapped onto MLA channels (and some channels, like olivine, don’t exist), the evaluation should be restricted to SWIR-active minerals, and I need to decide how much of a mineral the MLA must report before Tetracorder “should” see it.</p>
+<p>Also, I have looked at 3 samples, from a 200+ benchmark dataset. For a blog post.</p>
+<p>That’s Part 2. An objective, scientifically rigorous (or close enough for a blog) evaluation against the full benchmark dataset.</p>
+<p>Some hypotheses to test (you <em>could</em> call them conclusions from Part 1):</p>
+<ol type="1">
+<li><strong>Group 2 correctly identifies the dominant SWIR-active mineral.</strong></li>
+<li><strong>Group 1 Fe²⁺ rules over-call olivine and possibly actinolite</strong> where the Fe²⁺ actually comes from chlorite or carbonate. This assumes that the absence of an olivine channel in MLA is actually absence of olivine.</li>
+<li><strong>Mixed-carbonate classes do not reliably indicate a second carbonate.</strong> In Collinstown the calcite + dolomite match partly coincides with real dolomite; in Freiberg there is no dolomite, and mixing with chlorite is a candidate explanation.</li>
+<li><strong>Tetracorder detects SWIR-active minerals at low abundance in spectrally neutral matrices.</strong> The question is how low.</li>
+</ol>
+
+
+</section>
+
+ ]]></description>
+  <category>hyperspectral</category>
+  <category>core scanning</category>
+  <category>Tetracorder</category>
+  <guid>https://russjas.github.io/notes/tet-good-or-not.html</guid>
+  <pubDate>Sat, 17 Oct 2026 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Tetra-CORE-der</title>
   <dc:creator>Russell Rogers</dc:creator>
@@ -1505,7 +2464,41 @@ That just leaves correcting the radiance data to reflectance, which is why 6 fil
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="aHlwZXJzcGVjdHJhbCUyQ21pbmVyYWwlMjBtYXBzJTJDdGV0cmFjb3JkZXI=" data-listing-date-sort="1791504000000" data-listing-file-modified-sort="1791650637607" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4726">
+<div class="quarto-post image-right" data-index="0" data-categories="aHlwZXJzcGVjdHJhbCUyQ2NvcmUlMjBzY2FubmluZyUyQ1RldHJhY29yZGVy" data-listing-date-sort="1792195200000" data-listing-file-modified-sort="1792275339104" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3276">
+<div class="thumbnail"><a href="../notes/tet-good-or-not.html" class="no-external">
+
+<!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/tet-good-or-not.html -->
+
+</a></div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="../notes/tet-good-or-not.html" class="no-external">So how good is Tetracorder for core? - Part 1</a>
+</h3>
+<div class="listing-categories">
+
+<div class="listing-category" onclick="window.quartoListingCategory('aHlwZXJzcGVjdHJhbA=='); return false;">hyperspectral</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('Y29yZSUyMHNjYW5uaW5n'); return false;">core scanning</div>
+
+<div class="listing-category" onclick="window.quartoListingCategory('VGV0cmFjb3JkZXI='); return false;">Tetracorder</div>
+
+</div>
+<div class="delink listing-description"><a href="../notes/tet-good-or-not.html" class="no-external">
+<p>A look at Tetracorder performance on a benchmark hyperspectral dataset</p>
+</a></div>
+</div>
+<div class="metadata">
+<a href="../notes/tet-good-or-not.html" class="no-external">
+<div class="listing-date">
+Oct 17, 2026
+</div>
+<div class="listing-author">
+Russell Rogers
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="aHlwZXJzcGVjdHJhbCUyQ21pbmVyYWwlMjBtYXBzJTJDdGV0cmFjb3JkZXI=" data-listing-date-sort="1791504000000" data-listing-file-modified-sort="1792275339092" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4726">
 <div class="thumbnail"><a href="../notes/Tetra-CORE-der.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/Tetra-CORE-der.html -->
@@ -1539,7 +2532,7 @@ Russell Rogers
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="aHlwZXJzcGVjdHJhbCUyQ0NvcmVTcGVjVmlld2Vy" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1791650637607" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1056">
+<div class="quarto-post image-right" data-index="2" data-categories="aHlwZXJzcGVjdHJhbCUyQ0NvcmVTcGVjVmlld2Vy" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1792275339092" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1056">
 <div class="thumbnail"><a href="../notes/hyperspectra-data-big.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/hyperspectra-data-big.html -->
@@ -1571,7 +2564,7 @@ Russell Rogers
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="aHlwZXJzcGVjdHJhbCUyQ2ludGVycHJldGF0aW9uJTJDQ29yZVNwZWNWaWV3ZXIlMjBndWlkZXM=" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1791650637608" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1354">
+<div class="quarto-post image-right" data-index="3" data-categories="aHlwZXJzcGVjdHJhbCUyQ2ludGVycHJldGF0aW9uJTJDQ29yZVNwZWNWaWV3ZXIlMjBndWlkZXM=" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1792275339093" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1354">
 <div class="thumbnail"><a href="../notes/hyperspectral-made-easy.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/hyperspectral-made-easy.html -->
@@ -1609,7 +2602,7 @@ Russell Rogers
 <div class="listing-no-matching d-none">No matching items</div>
 </div> ]]></description>
   <guid>https://russjas.github.io/notes/</guid>
-  <pubDate>Sat, 10 Oct 2026 16:44:16 GMT</pubDate>
+  <pubDate>Sat, 17 Oct 2026 22:15:53 GMT</pubDate>
 </item>
 </channel>
 </rss>

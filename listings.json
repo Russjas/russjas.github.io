@@ -2,6 +2,7 @@
   {
     "listing": "/notes/index.html",
     "items": [
+      "/notes/tet-good-or-not.html",
       "/notes/Tetra-CORE-der.html",
       "/notes/hyperspectra-data-big.html",
       "/notes/hyperspectral-made-easy.html"
@@ -11,6 +12,7 @@
     "listing": "/index.html",
     "items": [
       "/notes/index.html",
+      "/notes/tet-good-or-not.html",
       "/notes/Tetra-CORE-der.html",
       "/notes/hyperspectra-data-big.html",
       "/notes/hyperspectral-made-easy.html"
