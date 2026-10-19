@@ -1,0 +1,15 @@
+<script>
+document.addEventListener("click", (event) => {
+  // Ignore clicks on navigation and interactive controls
+  if (event.target.closest(
+    "a, button, input, select, textarea, .slide-menu, .controls"
+  )) {
+    return;
+  }
+
+  // Only advance when clicking slide content
+  if (event.target.closest(".reveal .slides")) {
+    Reveal.next();
+  }
+});
+</script>

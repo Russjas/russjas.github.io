@@ -1,0 +1,7 @@
+---
+title: "Presentation Title"
+author: "Russell Rogers"
+institute: "Geological Survey Ireland"
+format: gsi-slides-revealjs
+footer: '[← Exit presentation](../index.html)'
+---

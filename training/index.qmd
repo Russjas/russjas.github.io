@@ -1,8 +1,19 @@
----
-title: "Training"
 
 ---
+title: "Training and talks"
+---
 
-### Training, talks, assorted documents converted to web friendly formats.  
+## Practical course on using CoreSpecViewer  
 
-Content is coming, probably
+![](GSI_logo.webp){fig-align="left" width=30%}
+
+This is a three part course with a step by step guide to exploring hyperspectral data with CoreSpecViewer.  
+  
+[Go to course](CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-course.qmd)
+ 
+*This course was developed as part of my role within Geological Survey Ireland and published with permission.* 
+  
+
+
+
+

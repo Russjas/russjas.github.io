@@ -1,0 +1,15 @@
+title: "GSI Slides"
+author: "Russell Rogers"
+version: 1.0.0
+
+contributes:
+  formats:
+    revealjs:
+      theme: simple
+      css: gsi.css
+      include-after-body: slides.html
+      mouse-wheel: true
+      slide-number: true
+      transition: none
+      width: 1280
+      height: 720

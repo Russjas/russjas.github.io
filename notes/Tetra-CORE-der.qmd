@@ -7,7 +7,7 @@ draft: false
 categories:
   - hyperspectral
   - mineral maps
-  - tetracorder
+  - Tetracorder
 lightbox: true
 ---
 

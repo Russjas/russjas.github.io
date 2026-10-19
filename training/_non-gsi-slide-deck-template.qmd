@@ -1,0 +1,6 @@
+---
+title: "Presentation Title"
+author: "Russell Rogers"
+format: standard-slides-revealjs
+footer: '[← Exit presentation](../index.html)'
+---

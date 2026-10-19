@@ -1,0 +1,38 @@
+/* Styling for the converted UCD CoreSpecViewer introduction deck */
+.reveal {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 30px;
+}
+.reveal h1, .reveal h2, .reveal h3 {
+  font-family: Arial, Helvetica, sans-serif;
+  text-transform: none;
+}
+.reveal h2 { font-size: 1.35em; color: #244a64; text-align: left; }
+.reveal h3 { font-size: 0.95em; color: #244a64; text-align: left; }
+.reveal p, .reveal li { line-height: 1.25; }
+.reveal ul { margin-top: 0.3em; }
+.reveal .slides section { text-align: left; }
+.reveal .slides section#title-slide { text-align: center; }
+.reveal .slides section.section-divider { text-align: center; }
+.reveal .slides section.section-divider h1 { font-size: 1.65em; }
+.reveal img { border: 0; box-shadow: none; object-fit: contain; }
+.reveal .slide-figure { display: block; margin: 0.25em auto; max-height: 410px; }
+.reveal .source { color: #666; font-size: 0.48em; margin-top: 0.3em; }
+.reveal section.camera-slide { font-size: 0.75em; }
+.reveal section.camera-slide img { max-height: 245px; margin: 0.1em auto; }
+.reveal section.camera-slide .columns { align-items: center; }
+.reveal section.camera-slide li { margin-bottom: 0.05em; }
+.reveal .footer { font-size: 0.6em; }
+.reveal .rows {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.reveal .figure-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.reveal .figure-grid img {
+  width: 100%;
+}
