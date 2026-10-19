@@ -636,7 +636,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </section>
 <section id="freiberg-1" class="level4">
 <h4 class="anchored" data-anchor-id="freiberg-1">Freiberg</h4>
-<div class="quarto-layout-panel" data-fig-cap="Freiberg: Tetracorder Group 2 classifications compared with MLA chlorite, calcite and dolomite abundances." data-layout="[[1, 1], [1, 1]]">
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Freiberg: Tetracorder Group 2 classifications compared with MLA chlorite, calcite and dolomite abundances.">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -767,7 +767,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </tr>
 </tbody>
 </table>
-<div class="quarto-layout-panel" data-fig-cap="Freiberg: Tetracorder Group 1 classifications compared with MLA abundant minerals" data-layout="[[1, 1], [1, 1]]">
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Freiberg: Tetracorder Group 1 classifications compared with MLA abundant minerals">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -901,7 +901,7 @@ The MLA shows that there is chlorite. Yay? Prehnite is really negligible in this
 </tr>
 </tbody>
 </table>
-<div class="quarto-layout-panel" data-fig-cap="Bösenbrunn: Tetracorder Group 1 classifications compared with MLA abundant minerals" data-layout="[[1, 1], [1, 1]]">
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Bösenbrunn: Tetracorder Group 1 classifications compared with MLA abundant minerals">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -1979,7 +1979,7 @@ Contains Irish Public Sector Data (Geological Survey Ireland) licensed under a C
 </section></div> ]]></description>
   <category>hyperspectral</category>
   <category>mineral maps</category>
-  <category>tetracorder</category>
+  <category>Tetracorder</category>
   <guid>https://russjas.github.io/notes/Tetra-CORE-der.html</guid>
   <pubDate>Fri, 09 Oct 2026 00:00:00 GMT</pubDate>
 </item>
@@ -2464,7 +2464,7 @@ That just leaves correcting the radiance data to reflectance, which is why 6 fil
 
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="aHlwZXJzcGVjdHJhbCUyQ2NvcmUlMjBzY2FubmluZyUyQ1RldHJhY29yZGVy" data-listing-date-sort="1792195200000" data-listing-file-modified-sort="1792276125359" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3303">
+<div class="quarto-post image-right" data-index="0" data-categories="aHlwZXJzcGVjdHJhbCUyQ2NvcmUlMjBzY2FubmluZyUyQ1RldHJhY29yZGVy" data-listing-date-sort="1792195200000" data-listing-file-modified-sort="1792425158991" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="17" data-listing-word-count-sort="3303">
 <div class="thumbnail"><a href="../notes/tet-good-or-not.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/tet-good-or-not.html -->
@@ -2498,7 +2498,7 @@ Russell Rogers
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="aHlwZXJzcGVjdHJhbCUyQ21pbmVyYWwlMjBtYXBzJTJDdGV0cmFjb3JkZXI=" data-listing-date-sort="1791504000000" data-listing-file-modified-sort="1792276125353" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4726">
+<div class="quarto-post image-right" data-index="1" data-categories="aHlwZXJzcGVjdHJhbCUyQ21pbmVyYWwlMjBtYXBzJTJDVGV0cmFjb3JkZXI=" data-listing-date-sort="1791504000000" data-listing-file-modified-sort="1792425158983" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="24" data-listing-word-count-sort="4726">
 <div class="thumbnail"><a href="../notes/Tetra-CORE-der.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/Tetra-CORE-der.html -->
@@ -2514,7 +2514,7 @@ Russell Rogers
 
 <div class="listing-category" onclick="window.quartoListingCategory('bWluZXJhbCUyMG1hcHM='); return false;">mineral maps</div>
 
-<div class="listing-category" onclick="window.quartoListingCategory('dGV0cmFjb3JkZXI='); return false;">tetracorder</div>
+<div class="listing-category" onclick="window.quartoListingCategory('VGV0cmFjb3JkZXI='); return false;">Tetracorder</div>
 
 </div>
 <div class="delink listing-description"><a href="../notes/Tetra-CORE-der.html" class="no-external">
@@ -2532,7 +2532,7 @@ Russell Rogers
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="aHlwZXJzcGVjdHJhbCUyQ0NvcmVTcGVjVmlld2Vy" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1792276125353" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1056">
+<div class="quarto-post image-right" data-index="2" data-categories="aHlwZXJzcGVjdHJhbCUyQ0NvcmVTcGVjVmlld2Vy" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1792425158983" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1056">
 <div class="thumbnail"><a href="../notes/hyperspectra-data-big.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/hyperspectra-data-big.html -->
@@ -2564,7 +2564,7 @@ Russell Rogers
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="aHlwZXJzcGVjdHJhbCUyQ2ludGVycHJldGF0aW9uJTJDQ29yZVNwZWNWaWV3ZXIlMjBndWlkZXM=" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1792276125353" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1354">
+<div class="quarto-post image-right" data-index="3" data-categories="aHlwZXJzcGVjdHJhbCUyQ2ludGVycHJldGF0aW9uJTJDQ29yZVNwZWNWaWV3ZXIlMjBndWlkZXM=" data-listing-date-sort="1790985600000" data-listing-file-modified-sort="1792425158984" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1354">
 <div class="thumbnail"><a href="../notes/hyperspectral-made-easy.html" class="no-external">
 
 <!-- img(9CEB782EFEE6)[progressive=false, height=, lazy=true]:listing:notes/hyperspectral-made-easy.html -->
@@ -2602,7 +2602,7 @@ Russell Rogers
 <div class="listing-no-matching d-none">No matching items</div>
 </div> ]]></description>
   <guid>https://russjas.github.io/notes/</guid>
-  <pubDate>Sat, 17 Oct 2026 22:28:58 GMT</pubDate>
+  <pubDate>Mon, 19 Oct 2026 15:52:57 GMT</pubDate>
 </item>
 </channel>
 </rss>

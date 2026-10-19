@@ -636,7 +636,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </section>
 <section id="freiberg-1" class="level4">
 <h4 class="anchored" data-anchor-id="freiberg-1">Freiberg</h4>
-<div class="quarto-layout-panel" data-fig-cap="Freiberg: Tetracorder Group 2 classifications compared with MLA chlorite, calcite and dolomite abundances." data-layout="[[1, 1], [1, 1]]">
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Freiberg: Tetracorder Group 2 classifications compared with MLA chlorite, calcite and dolomite abundances.">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -767,7 +767,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </tr>
 </tbody>
 </table>
-<div class="quarto-layout-panel" data-fig-cap="Freiberg: Tetracorder Group 1 classifications compared with MLA abundant minerals" data-layout="[[1, 1], [1, 1]]">
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Freiberg: Tetracorder Group 1 classifications compared with MLA abundant minerals">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -901,7 +901,7 @@ The MLA shows that there is chlorite. Yay? Prehnite is really negligible in this
 </tr>
 </tbody>
 </table>
-<div class="quarto-layout-panel" data-fig-cap="Bösenbrunn: Tetracorder Group 1 classifications compared with MLA abundant minerals" data-layout="[[1, 1], [1, 1]]">
+<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Bösenbrunn: Tetracorder Group 1 classifications compared with MLA abundant minerals">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -1979,7 +1979,7 @@ Contains Irish Public Sector Data (Geological Survey Ireland) licensed under a C
 </section></div> ]]></description>
   <category>hyperspectral</category>
   <category>mineral maps</category>
-  <category>tetracorder</category>
+  <category>Tetracorder</category>
   <guid>https://russjas.github.io/notes/Tetra-CORE-der.html</guid>
   <pubDate>Fri, 09 Oct 2026 00:00:00 GMT</pubDate>
 </item>

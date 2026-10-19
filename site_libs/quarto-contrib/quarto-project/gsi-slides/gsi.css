@@ -1,0 +1,86 @@
+
+/* ==========================================
+   Geological Survey Ireland presentation theme
+   ========================================== */
+
+/* Inherit standard presentation styling */
+@import url("slides.css");
+
+/* GSI colour definitions */
+:root {
+  --gsi-heading: #151F6D;
+  --gsi-text: #008EAA;
+  --gsi-background: #ffffff;
+}
+
+/* General slide formatting */
+.reveal {
+  color: var(--gsi-text);
+  background-color: var(--gsi-background);
+}
+
+/* Headings */
+.reveal h1,
+.reveal h2,
+.reveal h3 {
+  color: var(--gsi-heading);
+  text-transform: none;
+}
+
+/* Partial GSI logo in top-right corner */
+.reveal .slides > section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 100px;
+  height: 100px;
+
+  background-image: url("gsi-logo.png");
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-size: contain;
+
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Reserve room for the logo in headings */
+.reveal .slides section h2 {
+  padding-right: 140px;
+}
+
+/* Source attribution */
+.reveal .source {
+  font-size: 0.45em;
+  color: #666666;
+}
+
+/* Section divider slides */
+.reveal .slides section.section-divider {
+  text-align: center;
+}
+/* GSI title slide */
+.reveal .slides section.title-slide h1 {
+  font-size: 1.8em;
+  line-height: 1.15;
+  max-width: 85%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Keep the logo clear of the title */
+.reveal .slides section.title-slide::before {
+  top: 0;
+  right: 0;
+}
+
+/* Author and institute */
+.reveal .slides section.title-slide .author {
+  font-size: 0.9em;
+}
+
+.reveal .slides section.title-slide .institute {
+  font-size: 0.7em;
+}

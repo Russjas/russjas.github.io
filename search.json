@@ -60,7 +60,7 @@
     "href": "notes/index.html",
     "title": "Notes",
     "section": "",
-    "text": "These are deliberately not papers. They are a public notebook: small pieces of work that seem worth making findable and permanent.\nSome are analyses. Some are explanations. Some are records of an unexpected result. The level of polish varies with the problem.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSo how good is Tetracorder for core? - Part 1\n\n\n\nhyperspectral\n\ncore scanning\n\nTetracorder\n\n\n\nA look at Tetracorder performance on a benchmark hyperspectral dataset\n\n\n\n\n\nOct 17, 2026\n\n\nRussell Rogers\n\n\n\n\n\n\n\n\n\n\n\n\nTetra-CORE-der\n\n\n\nhyperspectral\n\nmineral maps\n\ntetracorder\n\n\n\nA too-deep dive into hyperspectral mineral mapping - but with lots of pictures\n\n\n\n\n\nOct 9, 2026\n\n\nRussell Rogers\n\n\n\n\n\n\n\n\n\n\n\n\nHyperspectral data is big!\n\n\n\nhyperspectral\n\nCoreSpecViewer\n\n\n\nDevelopment trade-offs in hyperspectral software\n\n\n\n\n\nOct 3, 2026\n\n\nRussell Rogers\n\n\n\n\n\n\n\n\n\n\n\n\nHyperspectral core scanning interpretation made easy - sort of!\n\n\n\nhyperspectral\n\ninterpretation\n\nCoreSpecViewer guides\n\n\n\nA shallow dive into CoreSpecViewer.\n\n\n\n\n\nOct 3, 2026\n\n\nRussell Rogers\n\n\n\n\n\nNo matching items"
+    "text": "These are deliberately not papers. They are a public notebook: small pieces of work that seem worth making findable and permanent.\nSome are analyses. Some are explanations. Some are records of an unexpected result. The level of polish varies with the problem.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nSo how good is Tetracorder for core? - Part 1\n\n\n\nhyperspectral\n\ncore scanning\n\nTetracorder\n\n\n\nA look at Tetracorder performance on a benchmark hyperspectral dataset\n\n\n\n\n\nOct 17, 2026\n\n\nRussell Rogers\n\n\n\n\n\n\n\n\n\n\n\n\nTetra-CORE-der\n\n\n\nhyperspectral\n\nmineral maps\n\nTetracorder\n\n\n\nA too-deep dive into hyperspectral mineral mapping - but with lots of pictures\n\n\n\n\n\nOct 9, 2026\n\n\nRussell Rogers\n\n\n\n\n\n\n\n\n\n\n\n\nHyperspectral data is big!\n\n\n\nhyperspectral\n\nCoreSpecViewer\n\n\n\nDevelopment trade-offs in hyperspectral software\n\n\n\n\n\nOct 3, 2026\n\n\nRussell Rogers\n\n\n\n\n\n\n\n\n\n\n\n\nHyperspectral core scanning interpretation made easy - sort of!\n\n\n\nhyperspectral\n\ninterpretation\n\nCoreSpecViewer guides\n\n\n\nA shallow dive into CoreSpecViewer.\n\n\n\n\n\nOct 3, 2026\n\n\nRussell Rogers\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "notes/tet-good-or-not.html",
@@ -98,6 +98,34 @@
     "text": "So, how good is it?\nOn three samples, the honest answer is “better than I expected, in some ways, and for some of the right reasons”.\nThe SWIR rules (Group 2) found the right spectrally active mineral in all three samples: calcite in Collinstown, chlorite and carbonate in Freiberg, and chlorite in Bösenbrunn. In Collinstown and Freiberg, they also put the carbonate in roughly the right place.\nThe VNIR Fe rules (Group 1) are much less reliable as mineral identifications. Olivine wins large areas of two samples that contain none, and actinolite wins across a nearly pure calcite. But Group 1 is not useless: its spatial patterns follow real mineralogical boundaries, and in both Collinstown and Freiberg the siderite winners pick out the carbonate veins from the matrix, even though the MLA has essentially no siderite.\nAcross all three samples, a large fraction of the rock (plagioclase, albite, quartz) is invisible in the VNIR–SWIR. Tetracorder is identifying the minor, spectrally active phases in an otherwise spectrally neutral matrix, and any fair evaluation has to account for that.\nObviously, this is very subjective! All of this looking between mineral maps and comparing spatial patterns is really fun, but what I need is an objective evaluation of Tetracorder’s performance against the full ground-truth dataset. That needs some care: Tetracorder classes have to be mapped onto MLA channels (and some channels, like olivine, don’t exist), the evaluation should be restricted to SWIR-active minerals, and I need to decide how much of a mineral the MLA must report before Tetracorder “should” see it.\nAlso, I have looked at 3 samples, from a 200+ benchmark dataset. For a blog post.\nThat’s Part 2. An objective, scientifically rigorous (or close enough for a blog) evaluation against the full benchmark dataset.\nSome hypotheses to test (you could call them conclusions from Part 1):\n\nGroup 2 correctly identifies the dominant SWIR-active mineral.\nGroup 1 Fe²⁺ rules over-call olivine and possibly actinolite where the Fe²⁺ actually comes from chlorite or carbonate. This assumes that the absence of an olivine channel in MLA is actually absence of olivine.\nMixed-carbonate classes do not reliably indicate a second carbonate. In Collinstown the calcite + dolomite match partly coincides with real dolomite; in Freiberg there is no dolomite, and mixing with chlorite is a candidate explanation.\nTetracorder detects SWIR-active minerals at low abundance in spectrally neutral matrices. The question is how low."
   },
   {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-course.html",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-course.html",
+    "title": "Introduction to practical training on hyperspectral image analysis with CoreSpecViewer",
+    "section": "",
+    "text": "This course was created as part of my role at Geological Survey Ireland\n\n\nThis course is designed to be used in conjunction with CoreSpecViewer. Download and install the software to get the most from this course.\n\nPart one\nPart one is an introduction to hyperspectral core scanning\nLaunch slides\n\n\nPart two\nPart two is a step by step guide to working with hyperspectral data at the individual scan level in CoreSpecViewer.\nThe data used in this presentation is from here (2GB download) if you want to follow along.\nLaunch slides\n\n\nPart three\nPart three is a step by step guide for working with hyperspectral data at the full hole level in CoreSpecViewer.\nin production - coming soon\n\nData and licence\nThe hyperspectral core scans used in this course (hole 00_13-18-088-11W5, boxes 101-114) are published by the Alberta Geological Survey (AGS) and were downloaded from:\nAlberta Geological Survey (2023): Core Data Interactive Map; Alberta Energy Regulator / Alberta Geological Survey, AER/AGS Interactive App or Map 014, https://ags.aer.ca/publications/all-publications/iam-014 [accessed August 2026].\nThe scanning programme is indexed in Spectrum Geosciences Ltd. and TerraCore Geospectral Imaging (2026): Index to hyperspectral core scanning imagery for mineral core from the Athabasca Basin, Canadian Shield, and Western Canada Sedimentary Basin in Alberta; Alberta Energy Regulator / Alberta Geological Survey, AER/AGS Special Report 129, 15 p.\nContains information licensed under the Open Government Licence – Alberta."
+  },
+  {
+    "objectID": "training/index.html",
+    "href": "training/index.html",
+    "title": "Training and talks",
+    "section": "",
+    "text": "This is a three part course with a step by step guide to exploring hyperspectral data with CoreSpecViewer.\nGo to course\nThis course was developed as part of my role within Geological Survey Ireland and published with permission."
+  },
+  {
+    "objectID": "training/index.html#practical-course-on-using-corespecviewer",
+    "href": "training/index.html#practical-course-on-using-corespecviewer",
+    "title": "Training and talks",
+    "section": "",
+    "text": "This is a three part course with a step by step guide to exploring hyperspectral data with CoreSpecViewer.\nGo to course\nThis course was developed as part of my role within Geological Survey Ireland and published with permission."
+  },
+  {
+    "objectID": "software/index.html",
+    "href": "software/index.html",
+    "title": "Software",
+    "section": "",
+    "text": "CoreSpecViewer\nAn open tool for working with hyperspectral drill-core imagery, from raw-data processing through visualisation, spectral exploration and downhole products.\nCoreSpecViewer repo\n\n\npython-tetracorder\nA port of the rules and evaluation logic of the Tetracorder algorithm to pure Python - with no guarantee or warranty!\npython-tetracorder repo\nThis is merely a translation of the expertise encoded in the phenomenal Tetracorder expert system. All citation and credit should go to: Roger N. Clark, Gregg A. Swayze, K. Eric Livo, Raymond F. Kokaly, Steve J. Sutley, J. Brad Dalton, Robert R. McDougal and Carol A. Gent, 2003, Imaging spectroscopy: Earth and planetary remote sensing with the USGS Tetracorder and expert systems, Journal of Geophysical Research, Vol 108."
+  },
+  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Russell Rogers: Things not worth a paper",
@@ -112,18 +140,235 @@
     "text": "Recent notes"
   },
   {
-    "objectID": "software/index.html",
-    "href": "software/index.html",
-    "title": "Software",
-    "section": "",
-    "text": "CoreSpecViewer\nAn open tool for working with hyperspectral drill-core imagery, from raw-data processing through visualisation, spectral exploration and downhole products.\nCoreSpecViewer repo\n\n\npython-tetracorder\nA port of the rules and evaluation logic of the Tetracorder algorithm to pure Python - with no guarantee or warranty!\npython-tetracorder repo\nThis is merely a translation of the expertise encoded in the phenomenal Tetracorder expert system. All citation and credit should go to: Roger N. Clark, Gregg A. Swayze, K. Eric Livo, Raymond F. Kokaly, Steve J. Sutley, J. Brad Dalton, Robert R. McDougal and Carol A. Gent, 2003, Imaging spectroscopy: Earth and planetary remote sensing with the USGS Tetracorder and expert systems, Journal of Geophysical Research, Vol 108."
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part1.html#what-is-hyperspectral-imaging",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part1.html#what-is-hyperspectral-imaging",
+    "title": "Hyperspectral image analysis",
+    "section": "What is Hyperspectral Imaging?",
+    "text": "What is Hyperspectral Imaging?\nSome definitions\n\n\n\n\nFigure taken from ruby-sapphire.com\n\n\nVisible light imaging\nThese are the standard images we take on a phone or camera. The instrument samples three bands of the visible portion of the electromagnetic spectrum, red, green and blue.\nSpectral Imaging\nSpectral imaging samples the electromagnetic spectrum in multiple bands beyond the visible.\n\nMultispectral images capture 3–15 broad bands.\nHyperspectral images capture hundreds of narrow contiguous bands across the electromagnetic spectrum."
   },
   {
-    "objectID": "training/index.html",
-    "href": "training/index.html",
-    "title": "Training",
-    "section": "",
-    "text": "Training, talks, assorted documents converted to web friendly formats.\nContent is coming, probably"
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part1.html#what-is-hyperspectral-imaging-1",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part1.html#what-is-hyperspectral-imaging-1",
+    "title": "Hyperspectral image analysis",
+    "section": "What is Hyperspectral Imaging?",
+    "text": "What is Hyperspectral Imaging?\n\n\nA hyperspectral image is a 3-dimensional array where z is wavelength.\nSpectral resolution is determined by number of bands, bandwidth and range. More bands and narrower bandwidth give higher spectral resolution.\n\n\nImage from: https://www.nireos.com/hyperspectral-imaging/"
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part1.html#where-can-we-get-hyperspectral-images",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part1.html#where-can-we-get-hyperspectral-images",
+    "title": "Hyperspectral image analysis",
+    "section": "Where can we get hyperspectral images?",
+    "text": "Where can we get hyperspectral images?\nGeological Survey Ireland Core Scanning\n\nOver 1400 drillholes scanned, producing &gt;80TB of data. Intention to scan entire collection ~500km of drill core."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part1.html#geological-survey-ireland-core-scanning-1",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part1.html#geological-survey-ireland-core-scanning-1",
+    "title": "Hyperspectral image analysis",
+    "section": "Geological Survey Ireland Core Scanning",
+    "text": "Geological Survey Ireland Core Scanning\n\n\n\n\n\nSpectrum figure taken from ruby-sapphire.com\n\n\nMid-Wave Infra-Red (MWIR) Camera\n\nBands: 154\nRange: 2712nm – 5274nm\n\nShort Wave Infra-Red (SWIR) Camera\n\nBands: 288\nRange: 978nm – 2580nm\n\nVisible light (RGB) Camera\n\nBands: 3\nRange: 440nm, 550nm, 630nm (discrete bands)"
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part1.html#why-do-we-care-about-hyperspectral-images",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part1.html#why-do-we-care-about-hyperspectral-images",
+    "title": "Hyperspectral image analysis",
+    "section": "Why do we care about hyperspectral images?",
+    "text": "Why do we care about hyperspectral images?\nDiagnostic Mineral Absorption features\n\nEnergy of different wavelengths is absorbed or reflected.\nAbsorption or reflectance can vary with mineral chemistry.\nFeatures known to be diagnostic of certain minerals can be observed in the spectra."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-start-with-a-single-scan",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-start-with-a-single-scan",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Start with a single scan",
+    "text": "In CoreSpecViewer: Start with a single scan\nOpen a hyperspectral core scan\nLaunch CoreSpecViewer using the installation guide on the repository page.\n\nNote that you are on the Raw page, one of four pages\nOpen the load dialogue, by clicking the open button at the top left of the interface.\nExamine the different data formats it can open.\nOpen the Raw Lumo output directory from the downloaded data.\n\nThe following slides all assume that you are working with hole 100131808811W500 box 103. The output descriptions will not make any sense if you are using a different scan."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#data-correction",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#data-correction",
+    "title": "Part 2: Working with a single scan",
+    "section": "Data Correction",
+    "text": "Data Correction\n\n\n\n\nThe area circled in red is part of a calcite vein.\nA pixel from this vein will be used in the following examples."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#data-correction-1",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#data-correction-1",
+    "title": "Part 2: Working with a single scan",
+    "section": "Data Correction",
+    "text": "Data Correction\n\n\n\n\n\n\n\n\\[\n\\text{Reflectance (%)} = \\frac{\\text{Sample} - \\text{Dark}}{\\text{White} - \\text{Dark}}\\times 100\n\\]\n\nThe image shows the data from a pixel of the calcite vein in the raw data, a spectrum of the dark reference and a spectrum of the white reference. The image is corrected to reflectance using the formula by CoreSpecViewer on load."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-open-and-process",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-open-and-process",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Open and Process",
+    "text": "In CoreSpecViewer: Open and Process\nRaw page:\n\nDouble-click a few pixels to see how directly you can interrogate the image.\nClick Auto-crop.\nClick Undo\nManually crop the image.\nClick Process."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#data-correction-2",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#data-correction-2",
+    "title": "Part 2: Working with a single scan",
+    "section": "Data Correction",
+    "text": "Data Correction\nOur calcite pixel\n\n\n\n\nBy clicking Process CoreSpecviewer takes the cropped extent of the reflectance corrected scan and performs smoothing using the supplied parameters (default is Savitzky-Golay, window=11, polynomial-order=2)"
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#convex-hull-quotient",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#convex-hull-quotient",
+    "title": "Part 2: Working with a single scan",
+    "section": "Convex Hull Quotient",
+    "text": "Convex Hull Quotient\n\n\n\n\nAs further part of the Process operation:\n\nContinuum, or convex hull, is calculated.\nSpectrum is divided by the convex hull.\nAll values are now 0–1.\nFeatures are more identifiable and spectra more comparable."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-processed-data",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-processed-data",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Processed Data",
+    "text": "In CoreSpecViewer: Processed Data\nVisualise page:\n\nLook at the cached products table.\n\nThese are the pre-calculated derived products from Process\n\nDouble-click some pixels.\n\nThis is the smoothed reflectance spectrum of the clicked pixel\n\nRight-click some pixels.\n\nThis is the continuum removed reflectance spectrum of the clicked pixel\n\nExamine the metadata available through the Info button.\nClick the Settings button.\n\nThese are the preset parameters that were used during processing."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-masking",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-masking",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Masking",
+    "text": "In CoreSpecViewer: Masking\nVisualise page:\n\nClick New Mask — select a pixel of the core box itself.\nEnhance Mask — select a different pixel of the box.\nFreehand Mask — draw a polygon.\nCreate a good core mask, marking non-core pixels."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-segmentation",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-segmentation",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Segmentation",
+    "text": "In CoreSpecViewer: Segmentation\nVisualise page:\n\nLook at the box convention in Settings.\nClick Calc Stats.\nOpen the Segments image.\nClick Unwrap Preview.\nOpen the DepthMap image from the products table"
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#unwrapping-and-depth-registration",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#unwrapping-and-depth-registration",
+    "title": "Part 2: Working with a single scan",
+    "section": "Unwrapping and Depth Registration",
+    "text": "Unwrapping and Depth Registration"
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-depth-registration",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-depth-registration",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Depth Registration",
+    "text": "In CoreSpecViewer: Depth Registration\nVisualise page\n\nCheck that your DepthMap is monotonically increasing in the correct convention.\nClick the Info button and check that the correct convention is embedded.\nClick Save.\n\nWe now have a pre-processed data cube ready for interpretation."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-spectral-exploration",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-spectral-exploration",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Spectral Exploration",
+    "text": "In CoreSpecViewer: Spectral Exploration\nVisualise page\n\nClick Quick-cluster.\nUse the default 5 clusters and 50 iterations.\nExamine the map.\nDouble-click Cluster Centres.\nIn the cluster centres window, double-click a class to view its centre."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-spectral-exploration-1",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-spectral-exploration-1",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Spectral Exploration",
+    "text": "In CoreSpecViewer: Spectral Exploration\nVisualise page:\n\nClick Band Maths.\nRun some indices in the dialogue. Using the equation to name the product is recommended.\n\nExamples:\nR2320\nR2350\nR2250\nR2250 / interp(R2150, R2350)"
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#absorption-features",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#absorption-features",
+    "title": "Part 2: Working with a single scan",
+    "section": "Absorption Features",
+    "text": "Absorption Features\n\nReflectance spectra of major rock-forming minerals in the 500–14,000 nm wavelength region.\n\nFigures taken from Laukamp et al. (2021): Mineral Physicochemistry Underlying Feature-Based Extraction of Mineral Abundance and Composition from Shortwave, Mid and Thermal Infrared Reflectance Spectra. Minerals, 11(4), 347."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#absorption-features-1",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#absorption-features-1",
+    "title": "Part 2: Working with a single scan",
+    "section": "Absorption Features",
+    "text": "Absorption Features\n\n\n\n\nFrom library reference spectra and published research, the 2300 nm feature is known to vary with carbonate composition.\n\nLonger wavelengths: more Ca-rich.\nShorter wavelengths: more Mg-rich.\n\n\n\nSpectra taken from JPL spectral library. Meerdink, S. K., Hook, S. J., Roberts, D. A., & Abbott, E. A. (2019). The ECOSTRESS spectral library version 1.0. Remote Sensing of Environment, 230, 111196."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#feature-extractions",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#feature-extractions",
+    "title": "Part 2: Working with a single scan",
+    "section": "Feature Extractions",
+    "text": "Feature Extractions\n\n\n\n\n\nTop continuum removed full spectral range\nLeft: carbonate feature region plotted from the continuum-removed curve.\n\nRight: continuum removed from the feature region of interest only.\n\nNB: different curve shape, but same minumum on measured band centre."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#feature-extractions-inter-band-fitting-minimum",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#feature-extractions-inter-band-fitting-minimum",
+    "title": "Part 2: Working with a single scan",
+    "section": "Feature Extractions: Inter-band Fitting Minimum",
+    "text": "Feature Extractions: Inter-band Fitting Minimum\n\nMany curves, with very different minima, can fit the measured data."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#feature-extractions-inter-band-fitting-minimum-1",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#feature-extractions-inter-band-fitting-minimum-1",
+    "title": "Part 2: Working with a single scan",
+    "section": "Feature Extractions: Inter-band Fitting Minimum",
+    "text": "Feature Extractions: Inter-band Fitting Minimum\n\n\n\n\n\nArgmin — simple band-centre minima.\nSQM — quadratic polynomial fitting¹.\nPolynomial — higher-order polynomial fitting².\nGaussian — multiple Gaussian curve fitting².\n\nCoreSpecViewer defaults to Polynomial fitting, which can be changed in the source.\n\n\n¹ Rodger, A., Laukamp, C., Haest, M. & Cudahy, T. (2012). A Simple Quadratic Method of Absorption Feature Wavelength Estimation in Continuum Removed Spectra. Remote Sensing of Environment, 118, 273–283.\n² Thiele, S. T. et al. (2021). Multi-scale, multi-sensor data integration for automated 3-D geological mapping. Ore Geology Reviews, 136, 104252."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#feature-extractions-defined-ranges",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#feature-extractions-defined-ranges",
+    "title": "Part 2: Working with a single scan",
+    "section": "Feature Extractions: Defined Ranges",
+    "text": "Feature Extractions: Defined Ranges\n\nTable 5 from Laukamp et al. (2021). Values for these features are hard-coded into CoreSpecViewer.\n\nLaukamp, C. et al. (2021). Mineral Physicochemistry Underlying Feature-Based Extraction of Mineral Abundance and Composition from Shortwave, Mid and Thermal Infrared Reflectance Spectra. Minerals, 11(4), 347."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-feature-extractions",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-feature-extractions",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Feature Extractions",
+    "text": "In CoreSpecViewer: Feature Extractions\nVisualise page\n\nClick Features and in the dropdown select:\n\n2250W\n2350W\n2320W\n\nExamine the feature maps.\nRight-click different feature-map regions to examine spectra."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-library-and-spectral-correlation",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-library-and-spectral-correlation",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Library and Spectral Correlation",
+    "text": "In CoreSpecViewer: Library and Spectral Correlation\nThe following instructions assume that you are using the Ecostress library version distributed with CoreSpecViewer.\nLibrary page:\n\nSort the library by mineral name.\nScroll to the bottom to load every mineral.\nType C, a to jump to calcite.\nDouble-click and right-click a few calcite exemplars.\nClick Filter to Current Band Range.\nExamine Calcite [116]; click Correlate on the Library page and look at the coefficient values in the image.\nExamine Dolomite [124]; click Correlate on the Library page and look at the coefficient values in the image."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-library-and-collections",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-library-and-collections",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Library and Collections",
+    "text": "In CoreSpecViewer: Library and Collections\nLibrary page:\n\nSelect Calcite [116], click Add to Collection, name it Demo1.\nSelect Dolomite [124], add to collection Demo1.\nIn the dropdown, select Demo1."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-mineral-mapping",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-mineral-mapping",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Mineral Mapping",
+    "text": "In CoreSpecViewer: Mineral Mapping\nVisualise page:\n\nClick Correlations.\nSelect MineralMap Pearson (Winner-takes-all).\nChoose the in-range collection.\nExamine the mineral map.\nClick Correlations again.\nSelect MineralMap Pearson (Winner-takes-all).\nChoose the Demo1 collection.\nExamine the mineral map."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-mineral-mapping-1",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-mineral-mapping-1",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Mineral Mapping",
+    "text": "In CoreSpecViewer: Mineral Mapping\nLibrary page:\n\nExamine Chlorite [1055]; click Correlate and inspect coefficient values.\nAdd Chlorite [1055] and the contents of Demo1 to Demo2.\n\nVisualise page:\n\nRun Pearson correlation on Demo2 and examine the mineral map.\nRight-click gaps to inspect their spectra.\n\nLibrary page:\n\nAdd Illite [969] and the contents of Demo2 to Demo3.\nRun Pearson correlation on Demo3 and examine the mineral map."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-mineral-mapping-2",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-mineral-mapping-2",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Mineral Mapping",
+    "text": "In CoreSpecViewer: Mineral Mapping\nLibrary page:\n\nAdd Montmorillonite [1007] and the contents of Demo3 to Demo4.\nClick into montmorillonite-coloured spectra.\nClick Correlations → Select Range → Pearson → 2000 to 2600.\nExamine the mineral map.\nRun Features extraction on 1900W.\nExamine the map."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-mineral-mapping-3",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-mineral-mapping-3",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Mineral Mapping",
+    "text": "In CoreSpecViewer: Mineral Mapping\nVisualise page:\n\nClick Correlation → MineralMap SAM (winner-takes-all) → Demo4.\nExamine the mineral map.\nClick Correlations → Select Range → SAM → 2000 to 2600.\nExamine the mineral map."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-saving-and-exporting",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#in-corespecviewer-saving-and-exporting",
+    "title": "Part 2: Working with a single scan",
+    "section": "In CoreSpecViewer: Saving and Exporting",
+    "text": "In CoreSpecViewer: Saving and Exporting\nVisualise page:\n\nClick Save.\nClick Generate Images.\nClick Generate Box Report."
+  },
+  {
+    "objectID": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#single-scan-interpretation-take-aways",
+    "href": "training/CoreSpecViewer-practical-training/CoreSpecViewer-practical-training-part2.html#single-scan-interpretation-take-aways",
+    "title": "Part 2: Working with a single scan",
+    "section": "Single Scan Interpretation: Take-aways",
+    "text": "Single Scan Interpretation: Take-aways\n\nInformation-dense datasets.\nMany tools to interpret the data.\nA combination of many approaches and geological knowledge of the core is the best way to extract the most understanding from the data.\nML models, while not covered here, lack many of the weaknesses of this holistic approach, but introduce new weaknesses of their own.\nBe wary of hyperspectral mineral maps, even if you know the exact methods used to produce them."
   },
   {
     "objectID": "notes/hyperspectra-data-big.html",
