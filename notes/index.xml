@@ -533,7 +533,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 <p><em>big image dump incoming</em></p>
 <section id="collinstown-1" class="level4">
 <h4 class="anchored" data-anchor-id="collinstown-1">Collinstown</h4>
-<div class="quarto-layout-panel" data-layout-ncol="3" data-fig-cap="Collinstown: Tetracorder Group 2 classifications compared with MLA calcite and dolomite abundances.">
+<div class="quarto-layout-panel" data-fig-cap="Collinstown: Tetracorder Group 2 classifications compared with MLA calcite and dolomite abundances." data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -601,7 +601,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </tr>
 </tbody>
 </table>
-<div class="quarto-layout-panel" data-layout-ncol="3" data-fig-cap="Collinstown: Tetracorder Group 1 classifications compared with MLA barite and pyrite abundances.">
+<div class="quarto-layout-panel" data-fig-cap="Collinstown: Tetracorder Group 1 classifications compared with MLA barite and pyrite abundances." data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -636,7 +636,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </section>
 <section id="freiberg-1" class="level4">
 <h4 class="anchored" data-anchor-id="freiberg-1">Freiberg</h4>
-<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Freiberg: Tetracorder Group 2 classifications compared with MLA chlorite, calcite and dolomite abundances.">
+<div class="quarto-layout-panel" data-fig-cap="Freiberg: Tetracorder Group 2 classifications compared with MLA chlorite, calcite and dolomite abundances." data-layout="[[1, 1], [1, 1]]">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -677,7 +677,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 <p>For Freiberg, Tetracorder Group 2 found mostly chlorite, calcite and dolomite (or actually a calcite-dolomite mixture).</p>
 <p>The MLA data shows that calcite and chlorite are in fact abundant in this sample (hooray!), and the spatial pattern of the lower calcite vein has been detected nicely by Tetracorder. The upper vein is less clear, but the MLA shows it is quartz-rich (below), and quartz has no VNIR–SWIR features to detect, so the carbonate signal there is diluted rather than missed.</p>
 <p>The dolomite is a problem, though: the MLA has no dolomite at all. It does have an ankerite channel however, an Fe-bearing dolomite-group carbonate, which could plausibly sit spectrally between the calcite and dolomite references.</p>
-<div class="quarto-layout-panel" data-layout-ncol="3" data-fig-cap="Freiberg: Tetracorder Group 1 and 2 classifications compared with MLA Ankerite abundances.">
+<div class="quarto-layout-panel" data-fig-cap="Freiberg: Tetracorder Group 1 and 2 classifications compared with MLA Ankerite abundances." data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -707,7 +707,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </div>
 <p>But it doesn’t hold up. The ankerite is low in abundance (note the stretch: the maximum is 0.2) and spread through the matrix, not concentrated in the calcite vein. So the <code>calcite+dolomite.5</code> match remains unexplained. One alternative is mixing with chlorite: calcite’s main absorption is near 2.34 µm, dolomite’s near 2.32 µm, and chlorite has a Mg-OH feature around 2.33 µm, so a calcite–chlorite mixture could pull the apparent carbonate feature towards a calcite–dolomite intermediate. That is one to test properly rather than assert.</p>
 <p>Group 1 also has <code>siderite1</code> winners along the lower calcite vein, despite the MLA reporting almost no siderite. Group 1 is picking out the carbonate vein from the matrix, but not naming it correctly.</p>
-<div class="quarto-layout-panel" data-layout-ncol="2" data-fig-cap="Freiberg: Tetracorder Group 1 classifications compared with MLA amphibole abundances.">
+<div class="quarto-layout-panel" data-fig-cap="Freiberg: Tetracorder Group 1 classifications compared with MLA amphibole abundances." data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -767,7 +767,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </tr>
 </tbody>
 </table>
-<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Freiberg: Tetracorder Group 1 classifications compared with MLA abundant minerals">
+<div class="quarto-layout-panel" data-fig-cap="Freiberg: Tetracorder Group 1 classifications compared with MLA abundant minerals" data-layout="[[1, 1], [1, 1]]">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -810,7 +810,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </section>
 <section id="bösenbrunn-1" class="level4">
 <h4 class="anchored" data-anchor-id="bösenbrunn-1">Bösenbrunn</h4>
-<div class="quarto-layout-panel" data-layout-ncol="3" data-fig-cap="Bösenbrunn: Tetracorder Group 2 classifications compared with MLA chlorite and prehnite abundances.">
+<div class="quarto-layout-panel" data-fig-cap="Bösenbrunn: Tetracorder Group 2 classifications compared with MLA chlorite and prehnite abundances." data-layout-ncol="3">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 33.3%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -840,7 +840,7 @@ font-style: inherit;"># persist results for later evaluation</span></span></code
 </div>
 <p>For Bösenbrunn Tetracorder Group 2 detected chlorite and a mixture of chlorite + prehnite.<br>
 The MLA shows that there is chlorite. Yay? Prehnite is really negligible in this sample, suggesting that the chlorite + prehnite match is Tetracorder’s best fit for some other mixture.</p>
-<div class="quarto-layout-panel" data-layout-ncol="2" data-fig-cap="Bösenbrunn: Tetracorder Group 1 classifications compared with MLA actinolite abundances.">
+<div class="quarto-layout-panel" data-fig-cap="Bösenbrunn: Tetracorder Group 1 classifications compared with MLA actinolite abundances." data-layout-ncol="2">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
@@ -901,7 +901,7 @@ The MLA shows that there is chlorite. Yay? Prehnite is really negligible in this
 </tr>
 </tbody>
 </table>
-<div class="quarto-layout-panel" data-layout="[[1, 1], [1, 1]]" data-fig-cap="Bösenbrunn: Tetracorder Group 1 classifications compared with MLA abundant minerals">
+<div class="quarto-layout-panel" data-fig-cap="Bösenbrunn: Tetracorder Group 1 classifications compared with MLA abundant minerals" data-layout="[[1, 1], [1, 1]]">
 <div class="quarto-layout-row">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
 <div class="quarto-figure quarto-figure-center">
