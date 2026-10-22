@@ -8,6 +8,8 @@ listing:
   categories: true
   max-items: 3
   feed: true
+  exclude:
+    filename: "index.qmd"
 ---
 
 I have a background in geology, and have become a bit fanatical about hyperspectral imagery, 

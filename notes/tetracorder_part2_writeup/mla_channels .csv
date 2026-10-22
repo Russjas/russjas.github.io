@@ -1,0 +1,122 @@
+mla_channel,species,group,spectral_group,paper_group
+Acanthite,acanthite,sulfide,inactive,
+Actinolite AM,actinolite,amphibole,Fe/Mg-OH,Amphibole
+Albite,albite,feldspar,inactive,Plagioclase
+AlFeBaPb-phosphate,,phosphate,inactive,Phosphate
+Allanite,allanite,epidote,inactive,Epidote
+AlPbCa-phosphate,,phosphate,inactive,Phosphate
+Amphibole,,amphibole,Fe/Mg-OH,Amphibole
+Anhydrite,anhydrite,anhydrite,inactive,Sulphate
+Ankerite,ankerite,dolomite,CO3,Ankerite
+Anorthite,anorthite,feldspar,inactive,Plagioclase
+Apatite,apatite,phosphate,inactive,Phosphate
+Arsenopyrite,arsenopyrite,sulfide,inactive,Sulphide
+AsNiCo,,sulfide,inactive,
+Barite,barite,barite,inactive,Sulphate
+Biotite,biotite,biotite,Fe/Mg-OH,Biotite
+Biotite Mica,biotite,biotite,Fe/Mg-OH,Biotite
+Bornite,bornite,sulfide,inactive,Sulphide
+Calcite,calcite,calcite,CO3,Calcite
+Cassiterite,cassiterite,oxide,inactive,
+Chalcocite,chalcocite,sulfide,inactive,Sulphide
+Chalcopyrite,chalcopyrite,sulfide,inactive,Sulphide
+Chamosite,chamosite,chlorite,Fe/Mg-OH,Chlorite
+Chamosite Chl,chamosite,chlorite,Fe/Mg-OH,Chlorite
+Chlorite,,chlorite,Fe/Mg-OH,Chlorite
+Chloritoid,chloritoid,chloritoid,Fe/Mg-OH,Chlorite
+Chromite,chromite,oxide,inactive,
+Clinochlore,clinochlore,chlorite,Fe/Mg-OH,Chlorite
+Clinochlore Chl,clinochlore,chlorite,Fe/Mg-OH,Chlorite
+Cobaltite,cobaltite,sulfide,inactive,
+Covellite,covellite,sulfide,inactive,Sulphide
+Crandallite,crandallite,crandallite,Al-OH,Phosphate
+Diopside CPX,diopside,pyroxene,inactive,Pyroxene
+Dolomite,dolomite,dolomite,CO3,Dolomite
+Enargite,enargite,sulfide,inactive,
+Epidote,epidote,epidote,Fe/Mg-OH,Epidote
+FeChlorite,chamosite,chlorite,Fe/Mg-OH,Chlorite
+FeMn Oxides,,oxide,inactive,FeOx
+FeMuscovite,muscovite,white_mica,Al-OH,Muscovite
+FeOx,,oxide,inactive,FeOx
+Ferrohornblende AM,hornblende,amphibole,Fe/Mg-OH,Amphibole
+Ferropargasite AM,pargasite,amphibole,Fe/Mg-OH,Amphibole
+Florencite,florencite,crandallite,Al-OH,Phosphate
+Fluorite,fluorite,fluorite,inactive,Fluorite
+Fluormicrolite,microlite,oxide,inactive,
+Freibergite,freibergite,sulfide,inactive,
+Galena,galena,sulfide,inactive,Sulphide
+Garnet,,garnet,inactive,Garnet
+Garnet Almandine,almandine,garnet,inactive,Garnet
+Garnet Almandine (Ca),almandine,garnet,inactive,Garnet
+Garnet Grossular,grossular,garnet,inactive,Garnet
+Garnet-Grossular,grossular,garnet,inactive,Garnet
+Goethite,goethite,fe_oxide,inactive,FeOx
+Goyazite,goyazite,crandallite,Al-OH,
+Grunerite AM,grunerite,amphibole,Fe/Mg-OH,Amphibole
+Gypsum,gypsum,gypsum,H2O,Sulphate
+Halite,halite,halide,inactive,
+Hedenbergite CPX,hedenbergite,pyroxene,inactive,Pyroxene
+Hematite,hematite,fe_oxide,inactive,FeOx
+Illite,illite,white_mica,Al-OH,Illite
+Ilmenite,ilmenite,oxide,inactive,
+K-feldspar,k-feldspar,feldspar,inactive,K-feldspar
+Kaolinite,kaolinite,kaolin,Al-OH,Kaolinite
+Kspar,k-feldspar,feldspar,inactive,K-feldspar
+Lepidolite,lepidolite,white_mica,Al-OH,Lepidolite
+Lollingite,lollingite,sulfide,inactive,
+Magnesite,magnesite,magnesite,CO3,
+Magnetite,magnetite,oxide,inactive,
+Manganocolumbite1,columbite,oxide,inactive,
+Manganocolumbite2,columbite,oxide,inactive,
+MnCa-carbonate,,rhodochrosite,CO3,
+Molybdenite,molybdenite,sulfide,inactive,
+Monazite,monazite,phosphate,inactive,Phosphate
+Monazite-(Ce),monazite,phosphate,inactive,
+Montebrasite,montebrasite,amblygonite,Al-OH,Phosphate
+Muscovite,muscovite,white_mica,Al-OH,Muscovite
+Muscovite Mica,muscovite,white_mica,Al-OH,Muscovite
+Muscovite Mica (FeMg),phengite,white_mica,Al-OH,Muscovite
+Na-phosphate,,phosphate,inactive,Phosphate
+Native Aluminum,aluminium,native_metal,inactive,
+Native Copper,copper,native_metal,inactive,
+Native Gold,gold,native_metal,inactive,
+Native Iron,iron,native_metal,inactive,
+Nontronite,nontronite,smectite,Fe/Mg-OH,
+Other,,,none,
+Parisite-(Ce),parisite,ree_carbonate,inactive,
+PbBi-sulfide,,sulfide,inactive,
+Pentlandite,pentlandite,sulfide,inactive,
+Phengite,phengite,white_mica,Al-OH,Muscovite
+Phlogopite Mica,phlogopite,biotite,Fe/Mg-OH,Biotite
+Plagioclase,plagioclase,feldspar,inactive,Plagioclase
+Porosity,,,none,
+Prehnite,prehnite,prehnite,Fe/Mg-OH,
+Pyrite,pyrite,sulfide,inactive,Sulphide
+Pyroxene,,pyroxene,inactive,Pyroxene
+Pyrrhotite,pyrrhotite,sulfide,inactive,Sulphide
+Quartz,quartz,quartz,inactive,Quartz
+Rutile,rutile,oxide,inactive,
+Rutile/Brookite/Anatase,,oxide,inactive,
+Scheelite,scheelite,tungstate,inactive,
+Serpentine,,serpentine,Fe/Mg-OH,
+Serpentine Lizardite,lizardite,serpentine,Fe/Mg-OH,
+Siderite,siderite,siderite,CO3,Ankerite
+Sphalerite,sphalerite,sulfide,inactive,Sulphide
+Stilpnomelane,stilpnomelane,stilpnomelane,Fe/Mg-OH,
+Stokesite,stokesite,stokesite,H2O,
+Sulfide,,sulfide,inactive,Sulphide
+Synchysite,synchysite,ree_carbonate,inactive,
+Synchysite-(Ce),synchysite,ree_carbonate,inactive,
+Talc,talc,talc,Fe/Mg-OH,
+Tennantite,tennantite,sulfide,inactive,Sulphide
+Tennantite (Cu),tennantite,sulfide,inactive,
+Tetrahedrite,tetrahedrite,sulfide,inactive,
+Tetrahedrite (Cu),tetrahedrite,sulfide,inactive,
+TiOx,,oxide,inactive,
+Titanite,titanite,titanite,inactive,
+Topaz,topaz,topaz,Al-OH,Topaz
+Unknown,,,none,
+Xenotime,xenotime,phosphate,inactive,
+Xenotime-(Y),xenotime,phosphate,inactive,
+Zircon,zircon,zircon,inactive,
+Zoisite,zoisite,epidote,Fe/Mg-OH,Epidote
