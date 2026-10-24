@@ -24,14 +24,16 @@ WRITEUP = Path(r"C:/Users/Hyperspectral/Documents/GitHub/russjas.github.io/notes
 DOCS = BENCHMARK / "docs"                                         # test_train_split.csv and paper_metrics_long.csv
 shed_path = BENCHMARK / "MLA" / "MLA.shed"
 OUT_DIR = DOCS / "results" / "thiele_vocab"
-
+CLEAN_DIR = BENCHMARK / "Tet_runs" / "Clean_runs"
 # run name -> (run folder, npz suffix); runs whose folder doesn't exist are skipped
 RUNS = {
-    "run1_sg11-2_g1g2": (BENCHMARK / "Tet_runs" / "11-2_GROUP1on", "_tetracorder_run_11_2.npz"),
-    "run2_sg11-2_g2": (BENCHMARK / "Tet_runs" / "11-2_NOGROUP1", "_tetracorder_run_11_2.npz"),
-    "run3_sg5-1_g2": (BENCHMARK / "Tet_runs" / "5-1_NOGROUP1", "_tetracorder_run_5_1.npz"),
-    "run4_sg11-2_g2_trueswir": (BENCHMARK / "Tet_runs" / "11-2_TRUSWIR_NOGROUP1", "_tetracorder_run_11_2.npz"),
+    "run1_sg11-2_g1g2": (CLEAN_DIR / "run1_sg11-2_g1g2", "_tetracorder.npz"),
+    "run2_sg11-2_g2": (CLEAN_DIR / "run2_sg11-2_g2", "_tetracorder.npz"),
+    "run3_sg5-1_g2": (CLEAN_DIR / "run3_sg5-1_g2", "_tetracorder.npz"),
+    "run4_sg11-2_g2_trueswir": (CLEAN_DIR / "run4_sg11-2_g2_trueswir", "_tetracorder.npz"),
 }
+
+
 
 CLIP = 2                                                          # edge erosion (MLAStack clip=2)
 CLOSURE = 0.7                                                     # the 22 groups must add up to at least 70%

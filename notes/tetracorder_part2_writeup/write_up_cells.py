@@ -3,7 +3,7 @@
 from tetracorderp import GroupEvaluator
 
 # an existing run saved to npz can be re-materialised 
-run = GroupEvaluator.from_npz("C:/Users/Hyperspectral/Documents/HS_Data/Helmholz_Benchmark_set/Tet_runs/11-2_GROUP1on/Geyer_bG16_tetracorder_run_11_2.npz")
+run = GroupEvaluator.from_npz("C:/Users/Hyperspectral/Documents/HS_Data/Helmholz_Benchmark_set/Tet_runs/Clean_runs/run4_sg11-2_g2_trueswir/Geyer_bG16_tetracorder.npz")
 print(run.group_winners.keys())
 #dict_keys([2]) run.group_winners a dictionary of all of the data for the groups analysed
 print(run.group_winners[2].keys())
@@ -19,7 +19,7 @@ print(winners.shape, winners.dtype)
 print("Pixel winner: ", winners[15, 23])
 print("Winner's fit: ",fit[15, 23])
 #Pixel winner:  clinochlore.fe.sc-cca-1
-#Winner's fit:  0.95764077
+#Winner's fit:  0.9536203
 #%% Anatomy of an MLA dataset
 from pathlib import Path
 import numpy as np
@@ -152,7 +152,7 @@ for g in [g for g in reported if (sample["dominant_group"] == g).any()
     denom = np.sqrt(float(tp + fp) * (tp + fn) * (tn + fp) * (tn + fn))
     mcc = (tp * tn - fp * fn) / denom if denom else np.nan       # -1 to 1, 0 = no better than chance
     print(f"{g:12s} n={tp + fn:4d}  precision={precision:.2f}  recall={recall:.2f}  MCC={mcc:.2f}")
-#biotite      n= 349  precision=0.00  recall=0.00  MCC=-0.03
+#biotite      n= 349  precision=0.00  recall=0.00  MCC=-0.02
 #chlorite     n=   0  precision=0.00  recall=nan  MCC=nan
 #smectite     n=   0  precision=0.00  recall=nan  MCC=nan
 #white_mica   n=   2  precision=0.00  recall=0.00  MCC=-0.02
@@ -193,15 +193,15 @@ neutral = neutral[neutral["group"].isin(present[present].index)]
 # The "absent" column is the false call rate.
 print(pd.crosstab(neutral["group"], neutral["bin"], values=neutral["called"], aggfunc="mean").round(2))
 #bin         absent  0-1%  1-2.5%  2.5-5%  5-10%  10-25%
-#group
-#biotite        0.0   0.0    0.00    0.00    0.0     0.0
-#chlorite       0.0   0.3    0.74    0.57    NaN     NaN
-#epidote        0.0   0.0     NaN     NaN    NaN     NaN
-#smectite       0.0   0.0     NaN     NaN    NaN     NaN
-#white_mica     0.0   0.1    0.45    0.88    1.0     NaN
+#group                                                  
+#biotite        0.0  0.00    0.00    0.00    0.0     0.0
+#chlorite       0.0  0.27    0.72    0.57    NaN     NaN
+#epidote        0.0  0.00     NaN     NaN    NaN     NaN
+#smectite       0.0  0.00     NaN     NaN    NaN     NaN
+#white_mica     0.0  0.10    0.45    0.88    1.0     NaN
 print(pd.crosstab(neutral["group"], neutral["bin"]))             # pixel counts behind each rate
 #bin         absent  0-1%  1-2.5%  2.5-5%  5-10%  10-25%
-#group
+#group                                                  
 #biotite        115    11       8      19     13       4
 #chlorite        70    84      61       7      0       0
 #epidote        115    12       0       0      0       0
@@ -246,7 +246,11 @@ print(summary.sort_values("n_calls", ascending=False).round(3))
 
 # calls the MLA can't judge: the named group isn't measured in this sample
 print(named_calls.loc[~named_calls["reported"], "group"].value_counts())
-#[paste output]
+#group
+#jarosite    16
+#gibbsite    12
+#prehnite     5
+#Name: count, dtype: int64
 #%% H3: does Tetracorder's fit track mineral abundance?
 rows = []
 for x, y in np.ndindex(winners.shape):
@@ -313,11 +317,10 @@ for metric in ["fit", "depth", "fit_depth"]:
 # smectite    0.052   0.098     NaN    NaN     NaN
 # white_mica  0.069   0.077   0.090  0.085   0.129
 # =============================================================================
+#%% Thiele *et al.* vocab test on the example sample
+from skimage.morphology import binary_erosion                    # the same function the benchmark's MLAStack uses
 
-#%% Thiele et al. vocabulary: their 22 groups, their pixel mask, their thresholds
-from scipy.ndimage import binary_erosion
-
-CLIP = 2                                                          # edge erosion, in pixels
+CLIP = 2                                                          # edge erosion (MLAStack clip=2)
 CLOSURE = 0.7                                                     # the 22 groups must add up to at least 70%
 OCCURRENCE = 0.025                                                # a group is present above 2.5%
 
@@ -328,19 +331,19 @@ channel_paper = mla_lookup.loc[mineral_channels, "paper_group"].to_numpy()
 filled = np.nan_to_num(mla)
 paper_abundance = np.stack([filled[..., channel_paper == pg].sum(axis=-1) for pg in PAPER22], axis=-1)
 
-# their mask: erode the sample edges, drop pixels where the 22 groups add up to under 70%, renormalise the rest
-inside = binary_erosion((filled > 0).any(axis=-1), structure=np.ones((CLIP, CLIP)))
+# their mask: a 2 x 2 erosion of the sample edges, drop pixels where the 22 groups add up to under 70%, renormalise
+inside = binary_erosion((filled > 0).any(axis=-1), np.ones((CLIP, CLIP)))
 total = paper_abundance.sum(axis=-1)
 keep = inside & (total >= CLOSURE)
 paper_abundance = paper_abundance[keep] / total[keep, None]
 print(f"{keep.sum()} of {keep.size} pixels kept")
-#958 of 1395 pixels kept
+# 958 of 1395 pixels kept
 
 # the two truths: every group over 2.5% (occurrence), and the single most abundant of all 22 (dominant phase)
 occurrence = paper_abundance > OCCURRENCE
 dominant = paper_abundance.argmax(axis=1)
 
-# Tetracorder side: which of the 22 groups the winner names (a mixture names several; most rules name none)
+# Tetracorder side: which of the 22 groups the winner names (a mixture names several; many rules name none)
 rule_paper = {rule: set(groups) - {""} for rule, groups in rule_lookup.groupby("rule_id")["paper_group"]}
 called = np.array([[pg in rule_paper.get(rule, set()) for pg in PAPER22] for rule in winners[keep]])
 
@@ -359,47 +362,17 @@ for i, pg in enumerate(PAPER22):
         mcc = (tp * tn - fp * fn) / denom if denom else np.nan
         result += f"  {name}: n={tp + fn:4d} precision={precision:.2f} recall={recall:.2f} MCC={mcc:.2f}"
     print(result)
-#Biotite       occurrence: n= 388 precision=0.00 recall=0.00 MCC=-0.03  dominant: n= 101 precision=0.00 recall=0.00 MCC=-0.01
-#Chlorite      occurrence: n= 258 precision=0.37 recall=0.38 MCC=0.14  dominant: n=   0 precision=0.00 recall=nan MCC=nan
-#Epidote       occurrence: n=  68 precision=nan recall=0.00 MCC=nan  dominant: n=   0 precision=nan recall=nan MCC=nan
-#Fluorite      occurrence: n=  20 precision=nan recall=0.00 MCC=nan  dominant: n=   0 precision=nan recall=nan MCC=nan
-#Illite        occurrence: n=   0 precision=0.00 recall=nan MCC=nan  dominant: n=   0 precision=0.00 recall=nan MCC=nan
-#K-feldspar    occurrence: n= 945 precision=nan recall=0.00 MCC=nan  dominant: n=  77 precision=nan recall=0.00 MCC=nan
-#Muscovite     occurrence: n= 422 precision=0.71 recall=0.07 MCC=0.11  dominant: n=   0 precision=0.00 recall=nan MCC=nan
-#Phosphate     occurrence: n=  24 precision=nan recall=0.00 MCC=nan  dominant: n=   0 precision=nan recall=nan MCC=nan
-#Plagioclase   occurrence: n= 949 precision=nan recall=0.00 MCC=nan  dominant: n= 198 precision=nan recall=0.00 MCC=nan
-#Quartz        occurrence: n= 958 precision=nan recall=0.00 MCC=nan  dominant: n= 582 precision=nan recall=0.00 MCC=nan
-#Sulphate      occurrence: n=   0 precision=0.00 recall=nan MCC=nan  dominant: n=   0 precision=0.00 recall=nan MCC=nan
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# =============================================================================
+# Biotite       occurrence: n= 388 precision=0.00 recall=0.00 MCC=-0.03  dominant: n= 101 precision=0.00 recall=0.00 MCC=-0.01
+# Chlorite      occurrence: n= 258 precision=0.37 recall=0.38 MCC=0.14  dominant: n=   0 precision=0.00 recall=nan MCC=nan
+# Epidote       occurrence: n=  68 precision=nan recall=0.00 MCC=nan  dominant: n=   0 precision=nan recall=nan MCC=nan
+# Fluorite      occurrence: n=  20 precision=nan recall=0.00 MCC=nan  dominant: n=   0 precision=nan recall=nan MCC=nan
+# Illite        occurrence: n=   0 precision=0.00 recall=nan MCC=nan  dominant: n=   0 precision=0.00 recall=nan MCC=nan
+# K-feldspar    occurrence: n= 945 precision=nan recall=0.00 MCC=nan  dominant: n=  77 precision=nan recall=0.00 MCC=nan
+# Muscovite     occurrence: n= 422 precision=0.71 recall=0.07 MCC=0.11  dominant: n=   0 precision=0.00 recall=nan MCC=nan
+# Phosphate     occurrence: n=  24 precision=nan recall=0.00 MCC=nan  dominant: n=   0 precision=nan recall=nan MCC=nan
+# Plagioclase   occurrence: n= 949 precision=nan recall=0.00 MCC=nan  dominant: n= 198 precision=nan recall=0.00 MCC=nan
+# Quartz        occurrence: n= 958 precision=nan recall=0.00 MCC=nan  dominant: n= 582 precision=nan recall=0.00 MCC=nan
+# Sulphate      occurrence: n=   0 precision=0.00 recall=nan MCC=nan  dominant: n=   0 precision=0.00 recall=nan MCC=nan
+# =============================================================================

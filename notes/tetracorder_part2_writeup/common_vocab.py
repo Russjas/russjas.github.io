@@ -25,14 +25,15 @@ WRITEUP = Path(r"C:/Users/Hyperspectral/Documents/GitHub/russjas.github.io/notes
 shed_path = BENCHMARK / "MLA" / "MLA.shed"
 DOCS = BENCHMARK / "docs" 
 OUT_DIR = DOCS / "results" / "common_vocab"
-
+CLEAN_DIR = BENCHMARK / "Tet_runs" / "Clean_runs"
 # run name -> (run folder, npz suffix); runs whose folder doesn't exist are skipped
 RUNS = {
-    "run1_sg11-2_g1g2": (BENCHMARK / "Tet_runs" / "11-2_GROUP1on", "_tetracorder_run_11_2.npz"),
-    "run2_sg11-2_g2": (BENCHMARK / "Tet_runs" / "11-2_NOGROUP1", "_tetracorder_run_11_2.npz"),
-    "run3_sg5-1_g2": (BENCHMARK / "Tet_runs" / "5-1_NOGROUP1", "_tetracorder_run_5_1.npz"),
-    "run4_sg11-2_g2_trueswir": (BENCHMARK / "Tet_runs" / "11-2_TRUSWIR_NOGROUP1", "_tetracorder_run_11_2.npz"),
+    "run1_sg11-2_g1g2": (CLEAN_DIR / "run1_sg11-2_g1g2", "_tetracorder.npz"),
+    "run2_sg11-2_g2": (CLEAN_DIR / "run2_sg11-2_g2", "_tetracorder.npz"),
+    "run3_sg5-1_g2": (CLEAN_DIR / "run3_sg5-1_g2", "_tetracorder.npz"),
+    "run4_sg11-2_g2_trueswir": (CLEAN_DIR / "run4_sg11-2_g2_trueswir", "_tetracorder.npz"),
 }
+
 
 SWIR_ACTIVE = {"Al-OH", "Fe/Mg-OH", "CO3", "H2O"}                # spectral groups with a SWIR absorption
 VOCAB = ["species", "group", "spectral_group"]                   # the three levels of the common vocabulary
@@ -240,7 +241,7 @@ h2a_long.to_csv(OUT_DIR / "h2a_detection_all_runs.csv", index=False)
 #%% H2b: is the mineral Tetracorder names actually there?
 h2b_scores = []
 for run_name, t in tables.items():
-    named_calls = t["h2b"]
+    named_calls = t["h2b"].astype({"mixture": bool, "reported": bool})  # empty samples leave these as object
 
     # calls the MLA can judge: how often is the named mineral group there at all?
     judged = named_calls[named_calls["reported"]]
@@ -267,7 +268,8 @@ h2b_scores.to_csv(OUT_DIR / "h2b_named_present_all_runs.csv", index=False)
 h3_rho = []
 for run_name, t in tables.items():
     # correct calls only: the winner names a single mineral group, and the MLA says that group is there
-    correct = t["h3"][t["h3"]["abundance"] > 0]
+    h3 = t["h3"].astype({"abundance": float, "fit": float, "depth": float, "fit_depth": float})  # as for H2b
+    correct = h3[h3["abundance"] > 0]
 
     # Spearman correlation with abundance: 1 = rises with abundance, 0 = unrelated
     rho = correct.groupby("group")[["abundance", "fit", "depth", "fit_depth"]].corr(method="spearman")
